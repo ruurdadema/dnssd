@@ -13,7 +13,7 @@
 #include <string>
 #include <map>
 
-#include "dnssd/private/Error.h"
+#include "dnssd/internal/Error.h"
 
 namespace dnssd {
 

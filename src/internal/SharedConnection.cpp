@@ -2,9 +2,9 @@
 // Created by Ruurd Adema on 28/06/2020.
 //
 
-#include <dnssd/private/SharedConnection.h>
-#include <dnssd/private/Error.h>
-#include <dnssd/private/Debug.h>
+#include <dnssd/internal/SharedConnection.h>
+#include <dnssd/internal/Error.h>
+#include <dnssd/internal/Debug.h>
 
 dnssd::SharedConnection::SharedConnection()
 {

@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include <dnssd/private/Error.h>
+#include <dnssd/internal/Error.h>
 #include <sstream>
 #include <utility>
 using namespace dnssd;

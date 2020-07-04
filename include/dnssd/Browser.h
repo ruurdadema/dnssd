@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "dnssd/private/SharedConnection.h"
+#include "dnssd/internal/SharedConnection.h"
 #include "ServiceDescription.h"
-#include "dnssd/private/Error.h"
-#include "dnssd/private/Service.h"
+#include "dnssd/internal/Error.h"
+#include "dnssd/internal/Service.h"
 
 #include <string>
 #include <thread>

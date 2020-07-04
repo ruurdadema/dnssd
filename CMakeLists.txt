@@ -6,19 +6,19 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(${PROJECT_NAME} STATIC
         include/dnssd/Browser.h
-        include/dnssd/private/ScopedDNSServiceRef.h
-        include/dnssd/private/Service.h
-        include/dnssd/private/SharedConnection.h
+        include/dnssd/internal/ScopedDNSServiceRef.h
+        include/dnssd/internal/Service.h
+        include/dnssd/internal/SharedConnection.h
         src/Advertiser.cpp
         src/Browser.cpp
         src/ServiceDescription.cpp
-        src/private/Debug.cpp
-        src/private/Error.cpp
-        src/private/Error.cpp/
-        src/private/ScopedDNSServiceRef.cpp
-        src/private/Service.cpp
-        src/private/SharedConnection.cpp
-        src/private/TXTRecord.cpp)
+        src/internal/Debug.cpp
+        src/internal/Error.cpp
+        src/internal/Error.cpp/
+        src/internal/ScopedDNSServiceRef.cpp
+        src/internal/Service.cpp
+        src/internal/SharedConnection.cpp
+        src/internal/TXTRecord.cpp include/dnssd/bonjour/Bonjour.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 

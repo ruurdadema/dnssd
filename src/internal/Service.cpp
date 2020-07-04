@@ -2,12 +2,12 @@
 // Created by Ruurd Adema on 28/06/2020.
 //
 
-#include <dnssd/private/Service.h>
-#include <dnssd/private/Debug.h>
+#include <dnssd/internal/Service.h>
+#include <dnssd/internal/Debug.h>
 
 #include <thread>
 #include <dnssd/Browser.h>
-#include <dnssd/private/TXTRecord.h>
+#include <dnssd/internal/TXTRecord.h>
 #include <map>
 
 void DNSSD_API resolveCallBack(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,

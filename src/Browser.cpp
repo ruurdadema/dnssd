@@ -3,7 +3,7 @@
 //
 
 #include <dnssd/Browser.h>
-#include <dnssd/private/Debug.h>
+#include <dnssd/internal/Debug.h>
 
 #include <string>
 #include <thread>

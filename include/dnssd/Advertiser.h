@@ -5,8 +5,8 @@
 #include <map>
 #include <functional>
 
-#include "dnssd/private/Error.h"
-#include "dnssd/private/TXTRecord.h"
+#include "dnssd/internal/Error.h"
+#include "dnssd/internal/TXTRecord.h"
 
 namespace dnssd {
 
