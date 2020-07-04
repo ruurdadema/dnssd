@@ -7,6 +7,7 @@
 #include "ScopedDNSServiceRef.h"
 
 namespace dnssd {
+
     class SharedConnection
     {
     public:
@@ -16,4 +17,5 @@ namespace dnssd {
     private:
         ScopedDNSServiceRef mServiceRef;
     };
-}
+
+} // namespace dnssd

@@ -7,6 +7,7 @@
 #include "dnssd/internal/Error.h"
 
 namespace dnssd {
+
     class ScopedDNSServiceRef
     {
     public:
@@ -25,4 +26,5 @@ namespace dnssd {
     private:
         DNSServiceRef mServiceRef = nullptr;
     };
-}
+
+} // namespace dnssd

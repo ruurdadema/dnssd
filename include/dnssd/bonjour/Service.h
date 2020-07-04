@@ -37,4 +37,5 @@ namespace dnssd {
         std::map<uint32_t, ScopedDNSServiceRef> mGetAddrs;
         ServiceDescription mDescription;
     };
-}
+
+} // namespace dnssd

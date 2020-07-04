@@ -9,8 +9,8 @@
 
 #include <map>
 
-namespace dnssd
-{
+namespace dnssd {
+
     class BonjourAdvertiserImpl : public Advertiser::Impl
     {
     public:
@@ -26,7 +26,8 @@ namespace dnssd
         void callObserver(std::function<void(const Advertiser::Listener&)>) noexcept;
 
     private:
-        DNSServiceRef mServiceRef = nullptr;
+        DNSServiceRef mServiceRef = nullptr; // TODO: Make this a ScopedDNSServiceRef
         const Advertiser::Listener& mListener;
     };
-}
+
+} // namespace dnssd

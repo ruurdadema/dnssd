@@ -12,6 +12,7 @@
 #include <atomic>
 
 namespace dnssd {
+
     class Browser
     {
     public:
@@ -42,4 +43,5 @@ namespace dnssd {
     private:
         std::unique_ptr<Impl> impl;
     };
-}
+
+} // namespace dnssd

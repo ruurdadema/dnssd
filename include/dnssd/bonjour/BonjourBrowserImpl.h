@@ -11,8 +11,8 @@
 #include "SharedConnection.h"
 #include "Service.h"
 
-namespace dnssd
-{
+namespace dnssd {
+
     class BonjourBrowserImpl : public Browser::Impl
     {
     public:
@@ -42,4 +42,5 @@ namespace dnssd
 
         void thread();
     };
+
 } // namespace dnssd

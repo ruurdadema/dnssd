@@ -10,6 +10,8 @@
 
 #pragma once
 
+// TODO: Rename this to Log.h
+
 #ifdef DNSSD_DEBUG
 #include <sstream>
 
