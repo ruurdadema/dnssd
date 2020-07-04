@@ -9,7 +9,7 @@
 
 namespace dnssd {
 
-    class Browser;
+    class BonjourBrowserImpl;
 
     class Service
     {
@@ -18,7 +18,7 @@ namespace dnssd {
                 const char* name,
                 const char* type,
                 const char* domain,
-                const Browser& owner);
+                const BonjourBrowserImpl& owner);
 
         void resolveOnInterface(uint32_t index);
         size_t removeInterface(uint32_t index);
@@ -32,7 +32,7 @@ namespace dnssd {
             DNSServiceErrorType errorCode, const char* hostname, const struct sockaddr* address, uint32_t ttl);
 
     private:
-        const Browser& mOwner;
+        const BonjourBrowserImpl& mOwner;
         std::map<uint32_t, ScopedDNSServiceRef> mResolvers;
         std::map<uint32_t, ScopedDNSServiceRef> mGetAddrs;
         ServiceDescription mDescription;

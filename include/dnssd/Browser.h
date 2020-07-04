@@ -7,7 +7,7 @@
 #include "dnssd/bonjour/SharedConnection.h"
 #include "ServiceDescription.h"
 #include "dnssd/internal/Error.h"
-#include "dnssd/internal/Service.h"
+#include "dnssd/bonjour/Service.h"
 
 #include <string>
 #include <thread>
@@ -17,6 +17,12 @@ namespace dnssd {
     class Browser
     {
     public:
+        class Impl
+        {
+        public:
+            virtual Error browseFor(const std::string& service) = 0;
+        };
+
         class Listener
         {
         public:
@@ -30,29 +36,11 @@ namespace dnssd {
             virtual void onBrowserErrorAsync(Error error) const noexcept = 0;
         };
 
-        Browser(const Listener& listener);
-        ~Browser();
+        explicit Browser(const Listener& listener);
 
         Error browseFor(const std::string& service);
 
-        [[nodiscard]] bool reportIfError(const Error& error) const noexcept;
-
-        void callListener(const std::function<void(const Listener&)>&) const noexcept;
-
-        void browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags inFlags, uint32_t interfaceIndex,
-                         DNSServiceErrorType errorCode, const char* name, const char* type,
-                         const char* domain);
-
-        [[nodiscard]] const SharedConnection& sharedConnection() const noexcept { return mSharedConnection; }
-
     private:
-        SharedConnection mSharedConnection;
-        const Listener& mListener;
-        std::map<std::string, ScopedDNSServiceRef> mBrowsers;
-        std::map<std::string, Service> mServices;
-        std::atomic_bool mKeepGoing = ATOMIC_VAR_INIT(true);
-        std::thread mThread;
-
-        void thread();
+        std::unique_ptr<Impl> impl;
     };
 }
