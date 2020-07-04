@@ -3,9 +3,20 @@
 #include <string>
 #include <iostream>
 
+class AdvertiserListener : public dnssd::Advertiser::Listener
+{
+public:
+
+    void onAdvertiserErrorAsync(dnssd::Error error) const noexcept override
+    {
+        std::cout << "Error: " << error.description() << std::endl;
+    }
+};
+
 int main(int argc, char *argv[])
 {
-    dnssd::Advertiser advertiser;
+    AdvertiserListener listener;
+    dnssd::Advertiser advertiser(listener);
 
     if (auto error = advertiser.registerService("_testservice._tcp", 512, {{"key1", "value1"}, {"key2", "value2"}}))
     {

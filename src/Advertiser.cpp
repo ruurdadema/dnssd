@@ -6,7 +6,7 @@
 
 using namespace dnssd;
 
-Advertiser::Advertiser() : impl(new BonjourAdvertiserImpl)
+dnssd::Advertiser::Advertiser(const Listener& listener) : impl(new BonjourAdvertiserImpl(listener))
 {
 }
 

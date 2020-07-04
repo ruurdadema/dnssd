@@ -23,14 +23,14 @@ public:
         virtual void unregisterService() noexcept = 0;
     };
 
-    class Observer
+    class Listener
     {
     public:
-        virtual ~Observer() = default;
-        virtual void onAdvertiserError(Error error) const noexcept = 0;
+        virtual ~Listener() = default;
+        virtual void onAdvertiserErrorAsync(Error error) const noexcept = 0;
     };
 
-    Advertiser();
+    explicit Advertiser(const Listener& listener);
     ~Advertiser();
 
     Error registerService(const std::string& serviceName, uint16_t port) noexcept;
