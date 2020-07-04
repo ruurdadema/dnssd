@@ -80,9 +80,6 @@ const char *Error::DNSServiceErrorDescription(DNSServiceErrorType error) noexcep
         default: return "Unknown error";
     }
 }
-Exception::Exception(std::string errorMsg): mErrorMsg(std::move(errorMsg))
-{
-}
 
 Exception::Exception(const Error& error): mErrorMsg(error.description())
 {

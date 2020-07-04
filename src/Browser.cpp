@@ -27,7 +27,7 @@ void dnssd::Browser::browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags
 {
     DNSSD_LOG_DEBUG("> browseReply enter (context=" << this << ")" << std::endl)
 
-    if (reportIfError(errorCode)) { return; }
+    if (reportIfError(Error(errorCode))) { return; }
 
     DNSSD_LOG_DEBUG(
         "> browseReply"
@@ -39,7 +39,7 @@ void dnssd::Browser::browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags
         << std::endl)
 
     char fullname[kDNSServiceMaxDomainName] = {};
-    if (reportIfError(DNSServiceConstructFullName(fullname, name, type, domain))) { return; }
+    if (reportIfError(Error(DNSServiceConstructFullName(fullname, name, type, domain)))) { return; }
 
     if (inFlags & kDNSServiceFlagsAdd)
     {
@@ -60,7 +60,7 @@ void dnssd::Browser::browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags
         auto foundService = mServices.find(fullname);
         if (foundService == mServices.end())
         {
-            if (reportIfError({std::string("service with fullname \"") + fullname + "\" not found"}))
+            if (reportIfError(Error(std::string("service with fullname \"") + fullname + "\" not found")))
             {
                 return;
             }
@@ -102,7 +102,7 @@ dnssd::Error dnssd::Browser::browseFor(const std::string& service)
     if (mBrowsers.find(service) != mBrowsers.end())
     {
         // Already browsing for this service
-        return {"already browsing for service \"" + service + "\""};
+        return Error("already browsing for service \"" + service + "\"");
     }
 
     // Initialize with the shared connection to pass it to DNSServiceBrowse
@@ -141,7 +141,7 @@ void dnssd::Browser::thread()
 
     if (fd < 0)
     {
-        if (reportIfError({"Invalid file descriptor"}))
+        if (reportIfError(Error("Invalid file descriptor")))
         {
             DNSSD_LOG_DEBUG("< Invalid file descriptor" << std::endl)
             return;
@@ -159,7 +159,7 @@ void dnssd::Browser::thread()
 
         if (result < 0) // Error
         {
-            if (reportIfError({"Select error: " + std::to_string(result)}))
+            if (reportIfError(Error("Select error: " + std::to_string(result))))
             {
                 DNSSD_LOG_DEBUG("! Error (code=" << result << ")" << std::endl)
                 break;
@@ -173,7 +173,7 @@ void dnssd::Browser::thread()
             if (FD_ISSET(fd, &readfds))
             {
                 DNSSD_LOG_DEBUG("> Main loop (FD_ISSET == true)" << std::endl)
-                (void) reportIfError(DNSServiceProcessResult(mSharedConnection));
+                (void) reportIfError(Error(DNSServiceProcessResult(mSharedConnection)));
             }
             else
             {

@@ -21,8 +21,8 @@ class Error
 {
 public:
     Error() = default;
-    Error(DNSServiceErrorType error) noexcept;
-    Error(const std::string& errorMsg) noexcept;
+    explicit Error(DNSServiceErrorType error) noexcept;
+    explicit Error(const std::string& errorMsg) noexcept;
 
     explicit operator bool() const { return mError != kDNSServiceErr_NoError || !mErrorMsg.empty(); }
 
@@ -37,10 +37,9 @@ private:
 class Exception: public std::exception
 {
 public:
-    Exception(std::string  errorMsg);
-    Exception(const Error& error);
+    explicit Exception(const Error& error);
 
-    const char* what() const throw ();
+    const char* what() const noexcept override;
 
 private:
     std::string mErrorMsg;

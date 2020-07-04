@@ -26,12 +26,12 @@ TXTRecord::~TXTRecord()
 
 Error TXTRecord::setValue(const std::string& key, const std::string& value) noexcept
 {
-    return TXTRecordSetValue(&mTxtRecordRef, key.c_str(), (uint8_t)value.length(), value.c_str());
+    return Error(TXTRecordSetValue(&mTxtRecordRef, key.c_str(), (uint8_t)value.length(), value.c_str()));
 }
 
 Error TXTRecord::setValue(const std::string& key) noexcept
 {
-    return TXTRecordSetValue(&mTxtRecordRef, key.c_str(), 0, nullptr);
+    return Error(TXTRecordSetValue(&mTxtRecordRef, key.c_str(), 0, nullptr));
 }
 
 uint16_t TXTRecord::length() const noexcept

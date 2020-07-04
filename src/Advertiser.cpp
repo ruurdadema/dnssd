@@ -17,7 +17,7 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
     (void) regType;
     (void) replyDomain;
 
-    Error error = { errorCode };
+    Error error(errorCode);
 
     if (error)
     {
@@ -35,12 +35,12 @@ Advertiser::~Advertiser()
 
 Error Advertiser::registerService(const std::string& serviceName, uint16_t port) noexcept
 {
-    const Error error = DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
-                                         htons(port), 0, nullptr, registerServiceCallBack, this);
+    Error error(DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
+                                   htons(port), 0, nullptr, registerServiceCallBack, this));
 
     if (error) { return error; }
 
-    return DNSServiceProcessResult(mServiceRef);
+    return Error(DNSServiceProcessResult(mServiceRef));
 }
 
 Error Advertiser::registerService(
@@ -50,12 +50,12 @@ Error Advertiser::registerService(
 
     std::cout << "Register service (thread id: " << std::this_thread::get_id() << ")" << std::endl;
 
-    const Error error = DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
+    const Error error(DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
                                          htons(port), txtRecord.length(), txtRecord.bytesPtr(), registerServiceCallBack,
-                                         this);
+                                         this));
     if (error) { return error; }
 
-    return DNSServiceProcessResult(mServiceRef);
+    return Error(DNSServiceProcessResult(mServiceRef));
 }
 
 Error Advertiser::registerService(
@@ -64,17 +64,16 @@ Error Advertiser::registerService(
 {
     TXTRecord txtRecord = TXTRecord();
 
-    for (auto& keyValue : keysValues)
-    {
+    for (auto& keyValue : keysValues) {
         txtRecord.setValue(keyValue.first, keyValue.second);
     }
 
-    const Error error = DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
+    const Error error(DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
                                          htons(port), txtRecord.length(), txtRecord.bytesPtr(), registerServiceCallBack,
-                                         this);
+                                         this));
     if (error) { return error; }
 
-    return DNSServiceProcessResult(mServiceRef);
+    return Error(DNSServiceProcessResult(mServiceRef));
 }
 
 

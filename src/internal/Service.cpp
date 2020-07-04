@@ -50,9 +50,9 @@ void dnssd::Service::resolveOnInterface(uint32_t index)
 
     DNSServiceRef resolveServiceRef = mOwner.sharedConnection();
 
-    if (mOwner.reportIfError(DNSServiceResolve(&resolveServiceRef, kDNSServiceFlagsShareConnection,
+    if (mOwner.reportIfError(Error(DNSServiceResolve(&resolveServiceRef, kDNSServiceFlagsShareConnection,
         index, mDescription.name.c_str(),mDescription.type.c_str(), mDescription.domain.c_str(),
-        ::resolveCallBack, this))) { return; }
+        ::resolveCallBack, this)))) { return; }
 
     mResolvers.insert({index, ScopedDNSServiceRef(resolveServiceRef)});
 }
@@ -64,7 +64,7 @@ void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags f
     DNSSD_LOG_DEBUG("> resolveCallBack enter (" << std::this_thread::get_id() << ") context=" << this << std::endl)
     DNSSD_LOG_DEBUG("- fullname=" << fullname << std::endl);
 
-    if (mOwner.reportIfError(errorCode)) { return; }
+    if (mOwner.reportIfError(Error(errorCode))) { return; }
 
     mDescription.hostTarget = hosttarget;
     mDescription.port = port;
@@ -78,9 +78,9 @@ void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags f
 
     DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection();
 
-    if (mOwner.reportIfError(DNSServiceGetAddrInfo(&getAddrInfoServiceRef,
+    if (mOwner.reportIfError(Error(DNSServiceGetAddrInfo(&getAddrInfoServiceRef,
         kDNSServiceFlagsShareConnection | kDNSServiceFlagsTimeout, interfaceIndex,
-        kDNSServiceProtocol_IPv4 | kDNSServiceProtocol_IPv6, hosttarget, ::getAddrInfoCallBack,this)))
+        kDNSServiceProtocol_IPv4 | kDNSServiceProtocol_IPv6, hosttarget, ::getAddrInfoCallBack,this))))
     {
         return;
     }
@@ -103,7 +103,7 @@ void dnssd::Service::getAddrInfoCallBack(DNSServiceRef sdRef, DNSServiceFlags fl
         return;
     }
 
-    if (mOwner.reportIfError(errorCode)) { return; }
+    if (mOwner.reportIfError(Error(errorCode))) { return; }
 
     char ip_addr[INET6_ADDRSTRLEN] = {};
 
@@ -135,9 +135,9 @@ void dnssd::Service::getAddrInfoCallBack(DNSServiceRef sdRef, DNSServiceFlags fl
     }
     else
     {
-        (void) mOwner.reportIfError({std::string("Interface with id \"")
+        (void) mOwner.reportIfError(Error(std::string("Interface with id \"")
             + std::to_string(interfaceIndex)
-            + "\" not found"});
+            + "\" not found"));
     }
 
     DNSSD_LOG_DEBUG("- Address: " << ip_addr << std::endl)
@@ -149,9 +149,9 @@ size_t dnssd::Service::removeInterface(uint32_t index)
     auto foundInterface = mDescription.interfaces.find(index);
     if (foundInterface == mDescription.interfaces.end())
     {
-        (void) mOwner.reportIfError({std::string("interface with index \"")
+        (void) mOwner.reportIfError(Error(std::string("interface with index \"")
             + std::to_string(index)
-            + "\" not found"});
+            + "\" not found"));
         return mDescription.interfaces.empty();
     }
 
