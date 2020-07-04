@@ -5,11 +5,11 @@ This library provides an interface which allows to work with dns-sd in an easy w
 
 ### MacOS
 
-XCode shold be installed
+XCode should be installed
 
 ### Windows
 
-This library needs the Bonjour SDK to work and expects it to be in the default install location _(ie C:\Program Files\Bonjour SDK)_
+This library needs the Bonjour SDK to work and expects it to be in the default install location (ie C:\Program Files\Bonjour SDK).
 
 
 ## Terminology around DNS Service Discovery
