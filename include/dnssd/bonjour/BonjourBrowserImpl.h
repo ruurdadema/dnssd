@@ -9,6 +9,7 @@
 #include "../Browser.h"
 
 #include "SharedConnection.h"
+#include "Service.h"
 
 namespace dnssd
 {
@@ -16,10 +17,10 @@ namespace dnssd
     {
     public:
 
-        BonjourBrowserImpl(const Browser::Listener& listener);
-        ~BonjourBrowserImpl();
+        explicit BonjourBrowserImpl(const Browser::Listener& listener);
+        ~BonjourBrowserImpl() override;
 
-        Error browseFor(const std::string& service);
+        Error browseFor(const std::string& service) override;
 
         [[nodiscard]] bool reportIfError(const Error& error) const noexcept;
 

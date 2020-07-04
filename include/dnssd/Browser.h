@@ -4,10 +4,8 @@
 
 #pragma once
 
-#include "dnssd/bonjour/SharedConnection.h"
 #include "ServiceDescription.h"
 #include "dnssd/internal/Error.h"
-#include "dnssd/bonjour/Service.h"
 
 #include <string>
 #include <thread>
@@ -20,6 +18,7 @@ namespace dnssd {
         class Impl
         {
         public:
+            virtual ~Impl() = default;
             virtual Error browseFor(const std::string& service) = 0;
         };
 
