@@ -6,7 +6,7 @@
 #include <functional>
 
 #include "dnssd/internal/Error.h"
-#include "dnssd/internal/TXTRecord.h"
+#include "dnssd/bonjour/TXTRecord.h"
 
 namespace dnssd {
 

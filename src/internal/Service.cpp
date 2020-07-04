@@ -7,7 +7,7 @@
 
 #include <thread>
 #include <dnssd/Browser.h>
-#include <dnssd/internal/TXTRecord.h>
+#include <dnssd/bonjour/TXTRecord.h>
 #include <map>
 
 void DNSSD_API resolveCallBack(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,

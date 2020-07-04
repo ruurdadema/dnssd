@@ -5,7 +5,7 @@
 #pragma once
 
 #include "dnssd/ServiceDescription.h"
-#include "ScopedDNSServiceRef.h"
+#include "dnssd/bonjour/ScopedDNSServiceRef.h"
 
 namespace dnssd {
 

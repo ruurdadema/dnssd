@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "dnssd/internal/SharedConnection.h"
+#include "dnssd/bonjour/SharedConnection.h"
 #include "ServiceDescription.h"
 #include "dnssd/internal/Error.h"
 #include "dnssd/internal/Service.h"

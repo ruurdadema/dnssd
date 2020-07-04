@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(${PROJECT_NAME} STATIC
         include/dnssd/Browser.h
-        include/dnssd/internal/ScopedDNSServiceRef.h
+        include/dnssd/bonjour/ScopedDNSServiceRef.h
         include/dnssd/internal/Service.h
-        include/dnssd/internal/SharedConnection.h
+        include/dnssd/bonjour/SharedConnection.h
         src/Advertiser.cpp
         src/Browser.cpp
         src/ServiceDescription.cpp

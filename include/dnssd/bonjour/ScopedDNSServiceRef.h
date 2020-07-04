@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Error.h"
+#include "dnssd/internal/Error.h"
 
 namespace dnssd {
     class ScopedDNSServiceRef

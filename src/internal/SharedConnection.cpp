@@ -2,7 +2,7 @@
 // Created by Ruurd Adema on 28/06/2020.
 //
 
-#include <dnssd/internal/SharedConnection.h>
+#include <dnssd/bonjour/SharedConnection.h>
 #include <dnssd/internal/Error.h>
 #include <dnssd/internal/Debug.h>
 

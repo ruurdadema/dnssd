@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include <dnssd/internal/TXTRecord.h>
+#include <dnssd/bonjour/TXTRecord.h>
 #include <map>
 
 using namespace dnssd;

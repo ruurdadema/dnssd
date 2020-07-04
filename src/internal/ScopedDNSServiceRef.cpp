@@ -2,7 +2,7 @@
 // Created by Ruurd Adema on 28/06/2020.
 //
 
-#include <dnssd/internal/ScopedDNSServiceRef.h>
+#include <dnssd/bonjour/ScopedDNSServiceRef.h>
 #include <utility>
 
 dnssd::ScopedDNSServiceRef::~ScopedDNSServiceRef()
