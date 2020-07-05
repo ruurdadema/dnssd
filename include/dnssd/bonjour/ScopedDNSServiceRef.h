@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "dnssd/internal/Error.h"
+#include "dnssd/common/Error.h"
 
 namespace dnssd {
 

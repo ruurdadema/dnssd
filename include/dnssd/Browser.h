@@ -5,7 +5,7 @@
 #pragma once
 
 #include "ServiceDescription.h"
-#include "dnssd/internal/Error.h"
+#include "dnssd/common/Error.h"
 
 #include <string>
 #include <thread>

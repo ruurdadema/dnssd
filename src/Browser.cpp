@@ -3,7 +3,7 @@
 //
 
 #include <dnssd/Browser.h>
-#include <dnssd/internal/Debug.h>
+#include <dnssd/common/Debug.h>
 #include <dnssd/bonjour/BonjourBrowserImpl.h>
 
 #include <string>

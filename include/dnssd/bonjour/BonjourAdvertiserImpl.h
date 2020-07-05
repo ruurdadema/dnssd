@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../internal/Error.h"
+#include "../common/Error.h"
 #include "../Advertiser.h"
 
 #include <map>

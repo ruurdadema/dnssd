@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include <dnssd/internal/Debug.h>
+#include <dnssd/common/Debug.h>
 #include <string>
 #include <iostream>
 #ifdef _WIN32

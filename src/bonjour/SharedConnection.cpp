@@ -3,8 +3,8 @@
 //
 
 #include <dnssd/bonjour/SharedConnection.h>
-#include <dnssd/internal/Error.h>
-#include <dnssd/internal/Debug.h>
+#include <dnssd/common/Error.h>
+#include <dnssd/common/Debug.h>
 
 dnssd::SharedConnection::SharedConnection()
 {

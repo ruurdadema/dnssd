@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "../internal/Debug.h"
-#include "../internal/Error.h"
+#include "../common/Debug.h"
+#include "../common/Error.h"
 #include "../Browser.h"
 
 #include "SharedConnection.h"
