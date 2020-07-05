@@ -36,10 +36,15 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
 
 dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& serviceName, uint16_t port) noexcept
 {
-    Error error(DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
-                                   htons(port), 0, nullptr, registerServiceCallBack, this));
+    DNSServiceRef serviceRef = nullptr;
 
-    if (error) { return error; }
+    if (auto error = Error(DNSServiceRegister(&serviceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
+                                   htons(port), 0, nullptr, registerServiceCallBack, this)))
+    {
+        return error;
+    };
+
+    mServiceRef = serviceRef;
 
     return Error(DNSServiceProcessResult(mServiceRef));
 }
@@ -48,13 +53,16 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
     const std::string &serviceName, uint16_t port,
     const TXTRecord &txtRecord) noexcept
 {
+    DNSServiceRef serviceRef = nullptr;
 
-    std::cout << "Register service (thread id: " << std::this_thread::get_id() << ")" << std::endl;
-
-    const Error error(DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
+    if (auto error = Error(DNSServiceRegister(&serviceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
                                          htons(port), txtRecord.length(), txtRecord.bytesPtr(), registerServiceCallBack,
-                                         this));
-    if (error) { return error; }
+                                         this)))
+    {
+        return error;
+    }
+
+    mServiceRef = serviceRef;
 
     return Error(DNSServiceProcessResult(mServiceRef));
 }
@@ -69,8 +77,10 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
         txtRecord.setValue(keyValue.first, keyValue.second);
     }
 
-    const Error error(DNSServiceRegister(
-        &mServiceRef,
+    DNSServiceRef serviceRef = nullptr;
+
+    if (auto error = Error(DNSServiceRegister(
+        &serviceRef,
         0,
         0,
         nullptr,
@@ -80,9 +90,12 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
         txtRecord.length(),
         txtRecord.bytesPtr(),
         registerServiceCallBack,
-        this));
+        this)))
+    {
+        return error;
+    }
 
-    if (error) { return error; }
+    mServiceRef = serviceRef;
 
     return Error(DNSServiceProcessResult(mServiceRef));
 }
