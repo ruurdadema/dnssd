@@ -7,7 +7,8 @@
 #include <iostream>
 #include <thread>
 
-dnssd::BonjourAdvertiser::BonjourAdvertiser(const Listener& listener) : mListener(listener)
+dnssd::BonjourAdvertiser::BonjourAdvertiser(const Listener& listener) :
+    CommonAdvertiserInterface(listener)
 {
 }
 
@@ -26,7 +27,8 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
     if (error)
     {
         auto* owner = static_cast<dnssd::BonjourAdvertiser*>(context);
-        owner->callObserver([error](const dnssd::CommonAdvertiserInterface::Listener& observer){ observer.onAdvertiserErrorAsync(error); });
+        owner->callListener([error](const dnssd::CommonAdvertiserInterface::Listener& observer)
+                            { observer.onAdvertiserErrorAsync(error); });
         owner->unregisterService();
         return;
     }
@@ -85,16 +87,10 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
     return Error(DNSServiceProcessResult(mServiceRef));
 }
 
-
 void dnssd::BonjourAdvertiser::unregisterService() noexcept
 {
     if (mServiceRef) {
         DNSServiceRefDeallocate(mServiceRef);
         mServiceRef = nullptr;
     }
-}
-
-void dnssd::BonjourAdvertiser::callObserver(std::function<void(const Listener&)> callback) noexcept
-{
-    callback(mListener);
 }

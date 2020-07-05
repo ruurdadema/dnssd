@@ -25,11 +25,9 @@ namespace dnssd {
                               const std::map<std::string, std::string>& keysValues) noexcept override;
 
         void unregisterService() noexcept override;
-        void callObserver(std::function<void(const Listener&)>) noexcept;
 
     private:
         DNSServiceRef mServiceRef = nullptr; // TODO: Make this a ScopedDNSServiceRef
-        const Listener& mListener;
     };
 
 } // namespace dnssd
