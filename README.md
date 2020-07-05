@@ -24,7 +24,7 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
 ## As subdirectory
 
-The easiest way of using this libary is to include this CMake project as subdirectory:
+The easiest way of using this libary is to include it as subdirectory in your CMake project.
 
     add_subdirectory(./path/to/this/directory)
     
@@ -33,6 +33,8 @@ And to link your targets to the library:
     target_link_libraries(target PRIVATE dnssd-cpp)
     
 ## As separate build
+
+If you don't use CMake for building then this way will produce a separate library.
 
     mkdir build 
     cd build
