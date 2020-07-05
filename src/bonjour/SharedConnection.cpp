@@ -4,7 +4,7 @@
 
 #include <dnssd/bonjour/SharedConnection.h>
 #include <dnssd/common/Error.h>
-#include <dnssd/common/Debug.h>
+#include <dnssd/common/Log.h>
 
 dnssd::SharedConnection::SharedConnection()
 {

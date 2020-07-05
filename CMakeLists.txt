@@ -17,7 +17,7 @@ add_library(${PROJECT_NAME} STATIC
         src/ServiceDescription.cpp
         src/bonjour/BonjourAdvertiserImpl.cpp
         src/bonjour/BonjourBrowserImpl.cpp
-        src/common/Debug.cpp
+        src/common/Log.cpp
         src/common/Error.cpp
         src/common/Error.cpp/
         src/bonjour/ScopedDNSServiceRef.cpp

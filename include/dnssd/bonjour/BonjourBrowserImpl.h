@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../common/Debug.h"
+#include "../common/Log.h"
 #include "../common/Error.h"
 #include "../Browser.h"
 
