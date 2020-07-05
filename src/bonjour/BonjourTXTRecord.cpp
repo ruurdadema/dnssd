@@ -1,50 +1,60 @@
 /*
   ==============================================================================
 
-    TXTRecord.cpp
+    BonjourTXTRecord.cpp
     Created: 21 Jun 2020 2:02:22pm
     Author:  Ruurd Adema
 
   ==============================================================================
 */
 
-#include <dnssd/bonjour/TXTRecord.h>
+#include <dnssd/bonjour/BonjourTXTRecord.h>
 #include <map>
 
 using namespace dnssd;
 
-TXTRecord::TXTRecord()
+BonjourTXTRecord::BonjourTXTRecord(const std::map<std::string, std::string>& keysValues)
 {
     // This way (0 and nullptr) the dns-sd will arrange allocation of a buffer
     TXTRecordCreate(&mTxtRecordRef, 0, nullptr);
+
+    for (auto& keyValue : keysValues)
+    {
+        setValue(keyValue.first, keyValue.second);
+    }
 }
 
-TXTRecord::~TXTRecord()
+BonjourTXTRecord::BonjourTXTRecord(const TxtRecord& txtRecord)
+{
+    BonjourTXTRecord(txtRecord.txtRecord());
+}
+
+BonjourTXTRecord::~BonjourTXTRecord()
 {
     TXTRecordDeallocate(&mTxtRecordRef);
 }
 
-Error TXTRecord::setValue(const std::string& key, const std::string& value) noexcept
+Error BonjourTXTRecord::setValue(const std::string& key, const std::string& value) noexcept
 {
     return Error(TXTRecordSetValue(&mTxtRecordRef, key.c_str(), (uint8_t)value.length(), value.c_str()));
 }
 
-Error TXTRecord::setValue(const std::string& key) noexcept
+Error BonjourTXTRecord::setValue(const std::string& key) noexcept
 {
     return Error(TXTRecordSetValue(&mTxtRecordRef, key.c_str(), 0, nullptr));
 }
 
-uint16_t TXTRecord::length() const noexcept
+uint16_t BonjourTXTRecord::length() const noexcept
 {
     return TXTRecordGetLength(&mTxtRecordRef);
 }
 
-const void* TXTRecord::bytesPtr() const noexcept
+const void* BonjourTXTRecord::bytesPtr() const noexcept
 {
     return TXTRecordGetBytesPtr(&mTxtRecordRef);
 }
 
-std::map<std::string, std::string> TXTRecord::getTxtRecordFromRawBytes(const unsigned char* txtRecordRawBytes, uint16_t txtRecordLength) noexcept
+std::map<std::string, std::string> BonjourTXTRecord::getTxtRecordFromRawBytes(const unsigned char* txtRecordRawBytes, uint16_t txtRecordLength) noexcept
 {
     std::map<std::string, std::string> txtRecord;
 

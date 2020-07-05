@@ -3,6 +3,7 @@
 //
 
 #include <dnssd/bonjour/BonjourAdvertiser.h>
+#include <dnssd/bonjour/BonjourTXTRecord.h>
 
 #include <iostream>
 #include <thread>
@@ -51,12 +52,13 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& servic
 
 dnssd::Error dnssd::BonjourAdvertiser::registerService(
     const std::string &serviceName, uint16_t port,
-    const TXTRecord &txtRecord) noexcept
+    const TxtRecord& txtRecord) noexcept
 {
     DNSServiceRef serviceRef = nullptr;
+    auto record = BonjourTXTRecord(txtRecord);
 
     if (auto error = Error(DNSServiceRegister(&serviceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
-                                         htons(port), txtRecord.length(), txtRecord.bytesPtr(), registerServiceCallBack,
+                                         htons(port), record.length(), record.bytesPtr(), registerServiceCallBack,
                                          this)))
     {
         return error;
@@ -71,11 +73,7 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
     const std::string &serviceName, uint16_t port,
     const std::map<std::string, std::string>& keysValues) noexcept
 {
-    TXTRecord txtRecord = TXTRecord();
-
-    for (auto& keyValue : keysValues) {
-        txtRecord.setValue(keyValue.first, keyValue.second);
-    }
+    BonjourTXTRecord txtRecord = BonjourTXTRecord(keysValues);
 
     DNSServiceRef serviceRef = nullptr;
 

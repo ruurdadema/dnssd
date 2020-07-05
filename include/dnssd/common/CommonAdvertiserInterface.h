@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "dnssd/bonjour/TXTRecord.h"
+#include "dnssd/common/TxtRecord.h"
 
 namespace dnssd {
 
@@ -22,7 +22,7 @@ namespace dnssd {
 
         virtual ~CommonAdvertiserInterface() = default;
         virtual Error registerService(const std::string& serviceName, uint16_t port) noexcept = 0;
-        virtual Error registerService(const std::string& serviceName, uint16_t port, const TXTRecord& txtRecord) noexcept = 0;
+        virtual Error registerService(const std::string& serviceName, uint16_t port, const TxtRecord& txtRecord) noexcept = 0;
         virtual Error registerService(const std::string& serviceName,
                                       uint16_t port,
                                       const std::map<std::string, std::string>& keysValues) noexcept = 0;

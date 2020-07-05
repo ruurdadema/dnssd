@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    TXTRecord.h
+    BonjourTXTRecord.h
     Created: 21 Jun 2020 2:02:22pm
     Author:  Ruurd Adema
 
@@ -14,14 +14,16 @@
 #include <map>
 
 #include "dnssd/common/Error.h"
+#include "dnssd/common/TxtRecord.h"
 
 namespace dnssd {
 
-    class TXTRecord
+    class BonjourTXTRecord
     {
     public:
-        TXTRecord();
-        ~TXTRecord();
+        explicit BonjourTXTRecord(const std::map<std::string, std::string>& keysValues);
+        explicit BonjourTXTRecord(const TxtRecord& txtRecord);
+        ~BonjourTXTRecord();
 
         Error setValue(const std::string& key, const std::string& value) noexcept;
         Error setValue(const std::string& key) noexcept;

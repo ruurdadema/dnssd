@@ -8,7 +8,7 @@
 
 #include <thread>
 #include <dnssd/Browser.h>
-#include <dnssd/bonjour/TXTRecord.h>
+#include <dnssd/bonjour/BonjourTXTRecord.h>
 #include <map>
 
 void DNSSD_API resolveCallBack(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
@@ -69,7 +69,7 @@ void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags f
 
     mDescription.hostTarget = hosttarget;
     mDescription.port = port;
-    mDescription.txtRecord = TXTRecord::getTxtRecordFromRawBytes(txtRecord, txtLen);
+    mDescription.txtRecord = BonjourTXTRecord::getTxtRecordFromRawBytes(txtRecord, txtLen);
 
     DNSSD_LOG_DEBUG("- resolveCallBack: " << mDescription.description() << std::endl)
 

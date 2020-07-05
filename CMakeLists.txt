@@ -12,17 +12,20 @@ add_library(${PROJECT_NAME} STATIC
         include/dnssd/bonjour/ScopedDNSServiceRef.h
         include/dnssd/bonjour/Service.h
         include/dnssd/bonjour/SharedConnection.h
+        include/dnssd/common/CommonAdvertiserInterface.h
+        include/dnssd/common/CommonBrowserInterface.h
+        include/dnssd/common/TxtRecord.h
         src/ServiceDescription.cpp
         src/bonjour/BonjourAdvertiser.cpp
         src/bonjour/BonjourBrowser.cpp
-        src/common/Log.cpp
-        src/common/Error.cpp
-        src/common/Error.cpp/
+        src/bonjour/BonjourTXTRecord.cpp
         src/bonjour/ScopedDNSServiceRef.cpp
         src/bonjour/Service.cpp
         src/bonjour/SharedConnection.cpp
-        src/bonjour/TXTRecord.cpp
-        include/dnssd/common/CommonAdvertiserInterface.h include/dnssd/common/CommonBrowserInterface.h)
+        src/common/Error.cpp
+        src/common/Error.cpp/
+        src/common/Log.cpp
+        )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
