@@ -4,14 +4,14 @@
 
 #include <dnssd/Browser.h>
 #include <dnssd/common/Log.h>
-#include <dnssd/bonjour/BonjourBrowserImpl.h>
+#include <dnssd/bonjour/BonjourBrowser.h>
 
 #include <string>
 #include <thread>
 #include <memory>
 
 dnssd::Browser::Browser(const Listener& listener):
-    impl(new BonjourBrowserImpl(listener))
+    impl(new BonjourBrowser(listener))
 {
 }
 

@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-class AdvertiserListener : public dnssd::AdvertiserInterface::Listener
+class AdvertiserListener : public dnssd::CommonAdvertiserInterface::Listener
 {
 public:
 

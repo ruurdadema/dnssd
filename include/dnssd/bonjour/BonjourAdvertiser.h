@@ -5,16 +5,16 @@
 #pragma once
 
 #include "../common/Error.h"
-#include "../common/AdvertiserInterface.h"
+#include "../common/CommonAdvertiserInterface.h"
 
 #include <map>
 
 namespace dnssd {
 
-    class BonjourAdvertiser : public AdvertiserInterface
+    class BonjourAdvertiser : public CommonAdvertiserInterface
     {
     public:
-        using Listener = AdvertiserInterface::Listener;
+        using Listener = CommonAdvertiserInterface::Listener;
 
         explicit BonjourAdvertiser(const Listener& listener);
 

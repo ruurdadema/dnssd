@@ -26,7 +26,7 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
     if (error)
     {
         auto* owner = static_cast<dnssd::BonjourAdvertiser*>(context);
-        owner->callObserver([error](const dnssd::AdvertiserInterface::Listener& observer){ observer.onAdvertiserErrorAsync(error); });
+        owner->callObserver([error](const dnssd::CommonAdvertiserInterface::Listener& observer){ observer.onAdvertiserErrorAsync(error); });
         owner->unregisterService();
         return;
     }

@@ -2,25 +2,25 @@
 // Created by Ruurd Adema on 04/07/2020.
 //
 
-#include <dnssd/bonjour/BonjourBrowserImpl.h>
+#include <dnssd/bonjour/BonjourBrowser.h>
 #include <dnssd/bonjour/Service.h>
 
 void DNSSD_API browseReply2(DNSServiceRef browseServiceRef, DNSServiceFlags flags, uint32_t interfaceIndex,
                             DNSServiceErrorType errorCode, const char* name, const char* type,
                             const char* domain, void* context)
 {
-    auto* browser = static_cast<dnssd::BonjourBrowserImpl*>(context);
+    auto* browser = static_cast<dnssd::BonjourBrowser*>(context);
     browser->browseReply(browseServiceRef, flags, interfaceIndex, errorCode, name, type, domain);
 }
 
-dnssd::BonjourBrowserImpl::BonjourBrowserImpl(const Browser::Listener& listener):
+dnssd::BonjourBrowser::BonjourBrowser(const CommonBrowserInterface::Listener& listener):
     mListener(listener),
-    mThread(std::thread(&BonjourBrowserImpl::thread, this))
+    mThread(std::thread(&BonjourBrowser::thread, this))
 {
 }
 
-void dnssd::BonjourBrowserImpl::browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags inFlags, uint32_t interfaceIndex,
-                                 DNSServiceErrorType errorCode, const char* name, const char* type, const char* domain)
+void dnssd::BonjourBrowser::browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags inFlags, uint32_t interfaceIndex,
+                                        DNSServiceErrorType errorCode, const char* name, const char* type, const char* domain)
 {
     DNSSD_LOG_DEBUG("> browseReply enter (context=" << this << ")" << std::endl)
 
@@ -45,7 +45,7 @@ void dnssd::BonjourBrowserImpl::browseReply(DNSServiceRef browseServiceRef, DNSS
         if (service == mServices.end())
         {
             service = mServices.insert({fullname, Service(fullname, name, type, domain, *this)}).first;
-            callListener([&service](const Browser::Listener& observer){
+            callListener([&service](const CommonBrowserInterface::Listener& observer){
                 observer.onServiceDiscoveredAsync(service->second.description());
             });
         }
@@ -66,7 +66,7 @@ void dnssd::BonjourBrowserImpl::browseReply(DNSServiceRef browseServiceRef, DNSS
         if (foundService->second.removeInterface(interfaceIndex) == 0)
         {
             // We just removed the last interface
-            callListener([&foundService](const Browser::Listener& observer){
+            callListener([&foundService](const CommonBrowserInterface::Listener& observer){
                 observer.onServiceRemovedAsync(foundService->second.description());
             });
 
@@ -78,15 +78,15 @@ void dnssd::BonjourBrowserImpl::browseReply(DNSServiceRef browseServiceRef, DNSS
     DNSSD_LOG_DEBUG("< browseReply exit (" << std::this_thread::get_id() << ")" << std::endl)
 }
 
-void dnssd::BonjourBrowserImpl::callListener(const std::function<void(const Browser::Listener&)>& callback) const noexcept
+void dnssd::BonjourBrowser::callListener(const std::function<void(const Listener&)>& callback) const noexcept
 {
     callback(mListener);
 }
-bool dnssd::BonjourBrowserImpl::reportIfError(const dnssd::Error& error) const noexcept
+bool dnssd::BonjourBrowser::reportIfError(const dnssd::Error& error) const noexcept
 {
     if (error)
     {
-        callListener([error](const Browser::Listener& listener) {
+        callListener([error](const Listener& listener) {
             listener.onBrowserErrorAsync(error);
         });
         return true;
@@ -94,7 +94,7 @@ bool dnssd::BonjourBrowserImpl::reportIfError(const dnssd::Error& error) const n
     return false;
 }
 
-dnssd::Error dnssd::BonjourBrowserImpl::browseFor(const std::string& service)
+dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
 {
     if (mBrowsers.find(service) != mBrowsers.end())
     {
@@ -123,7 +123,7 @@ dnssd::Error dnssd::BonjourBrowserImpl::browseFor(const std::string& service)
     return dnssd::Error();
 }
 
-void dnssd::BonjourBrowserImpl::thread()
+void dnssd::BonjourBrowser::thread()
 {
     DNSSD_LOG_DEBUG("> Start browse thread" << std::endl)
 
@@ -181,7 +181,7 @@ void dnssd::BonjourBrowserImpl::thread()
 
     DNSSD_LOG_DEBUG("< Stop browse thread" << std::endl)
 }
-dnssd::BonjourBrowserImpl::~BonjourBrowserImpl()
+dnssd::BonjourBrowser::~BonjourBrowser()
 {
     mKeepGoing = false;
     if (mThread.joinable()) { mThread.join(); }

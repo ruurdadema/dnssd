@@ -8,7 +8,7 @@ add_library(${PROJECT_NAME} STATIC
         include/dnssd/Browser.h
         include/dnssd/bonjour/Bonjour.h
         include/dnssd/bonjour/BonjourAdvertiser.h
-        include/dnssd/bonjour/BonjourBrowserImpl.h
+        include/dnssd/bonjour/BonjourBrowser.h
         include/dnssd/bonjour/ScopedDNSServiceRef.h
         include/dnssd/bonjour/Service.h
         include/dnssd/bonjour/SharedConnection.h
@@ -16,7 +16,7 @@ add_library(${PROJECT_NAME} STATIC
         src/Browser.cpp
         src/ServiceDescription.cpp
         src/bonjour/BonjourAdvertiser.cpp
-        src/bonjour/BonjourBrowserImpl.cpp
+        src/bonjour/BonjourBrowser.cpp
         src/common/Log.cpp
         src/common/Error.cpp
         src/common/Error.cpp/
@@ -24,7 +24,7 @@ add_library(${PROJECT_NAME} STATIC
         src/bonjour/Service.cpp
         src/bonjour/SharedConnection.cpp
         src/bonjour/TXTRecord.cpp
-        include/dnssd/common/AdvertiserInterface.h)
+        include/dnssd/common/CommonAdvertiserInterface.h include/dnssd/common/CommonBrowserInterface.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 

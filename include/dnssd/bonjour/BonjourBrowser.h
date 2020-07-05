@@ -6,25 +6,28 @@
 
 #include "../common/Log.h"
 #include "../common/Error.h"
-#include "../Browser.h"
+#include "../common/CommonBrowserInterface.h"
 
 #include "SharedConnection.h"
 #include "Service.h"
 
+#include <thread>
+
 namespace dnssd {
 
-    class BonjourBrowserImpl : public Browser::Impl
+    class BonjourBrowser : public CommonBrowserInterface
     {
     public:
+        using Listener = CommonBrowserInterface::Listener;
 
-        explicit BonjourBrowserImpl(const Browser::Listener& listener);
-        ~BonjourBrowserImpl() override;
+        explicit BonjourBrowser(const Listener& listener);
+        ~BonjourBrowser() override;
 
         Error browseFor(const std::string& service) override;
 
         [[nodiscard]] bool reportIfError(const Error& error) const noexcept;
 
-        void callListener(const std::function<void(const Browser::Listener&)>&) const noexcept;
+        void callListener(const std::function<void(const Listener&)>&) const noexcept;
 
         void browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags inFlags, uint32_t interfaceIndex,
                          DNSServiceErrorType errorCode, const char* name, const char* type,
@@ -34,7 +37,7 @@ namespace dnssd {
 
     private:
         SharedConnection mSharedConnection;
-        const Browser::Listener& mListener;
+        const Listener& mListener;
         std::map<std::string, ScopedDNSServiceRef> mBrowsers;
         std::map<std::string, Service> mServices;
         std::atomic_bool mKeepGoing = ATOMIC_VAR_INIT(true);

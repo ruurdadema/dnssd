@@ -6,7 +6,7 @@
 #include <functional>
 
 #include "dnssd/common/Error.h"
-#include "dnssd/common/AdvertiserInterface.h"
+#include "dnssd/common/CommonAdvertiserInterface.h"
 #include "dnssd/bonjour/TXTRecord.h"
 
 namespace dnssd {
@@ -14,7 +14,7 @@ namespace dnssd {
     class Advertiser
     {
     public:
-        using Listener = AdvertiserInterface::Listener;
+        using Listener = CommonAdvertiserInterface::Listener;
 
         explicit Advertiser(const Listener& listener);
         ~Advertiser();
@@ -24,7 +24,7 @@ namespace dnssd {
         Error registerService(const std::string& serviceName, uint16_t port, const std::map<std::string, std::string>& keysValues) noexcept;
 
     private:
-        std::unique_ptr<AdvertiserInterface> impl;
+        std::unique_ptr<CommonAdvertiserInterface> impl;
     };
 
 } // namespace dnssd

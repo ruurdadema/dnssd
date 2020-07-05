@@ -4,7 +4,7 @@
 
 #include <dnssd/bonjour/Service.h>
 #include <dnssd/common/Log.h>
-#include <dnssd/bonjour/BonjourBrowserImpl.h>
+#include <dnssd/bonjour/BonjourBrowser.h>
 
 #include <thread>
 #include <dnssd/Browser.h>
@@ -31,7 +31,7 @@ dnssd::Service::Service(const char* fullname,
                         const char* name,
                         const char* type,
                         const char* domain,
-                        const BonjourBrowserImpl& owner) : mOwner(owner)
+                        const BonjourBrowser& owner) : mOwner(owner)
 {
     mDescription.fullname = fullname;
     mDescription.name     = name;
