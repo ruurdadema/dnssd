@@ -1,12 +1,12 @@
 #include <dnssd/Advertiser.h>
-#include <dnssd/bonjour/BonjourAdvertiserImpl.h>
+#include <dnssd/bonjour/BonjourAdvertiser.h>
 
 #include <iostream>
 #include <thread>
 
 using namespace dnssd;
 
-dnssd::Advertiser::Advertiser(const Listener& listener) : impl(new BonjourAdvertiserImpl(listener))
+dnssd::Advertiser::Advertiser(const Listener& listener) : impl(new BonjourAdvertiser(listener))
 {
 }
 

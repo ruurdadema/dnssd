@@ -2,12 +2,12 @@
 // Created by Ruurd Adema on 04/07/2020.
 //
 
-#include <dnssd/bonjour/BonjourAdvertiserImpl.h>
+#include <dnssd/bonjour/BonjourAdvertiser.h>
 
 #include <iostream>
 #include <thread>
 
-dnssd::BonjourAdvertiserImpl::BonjourAdvertiserImpl(const Advertiser::Listener& listener) : mListener(listener)
+dnssd::BonjourAdvertiser::BonjourAdvertiser(const Listener& listener) : mListener(listener)
 {
 }
 
@@ -25,14 +25,14 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
 
     if (error)
     {
-        auto* owner = static_cast<dnssd::BonjourAdvertiserImpl*>(context);
-        owner->callObserver([error](const dnssd::Advertiser::Listener& observer){ observer.onAdvertiserErrorAsync(error); });
+        auto* owner = static_cast<dnssd::BonjourAdvertiser*>(context);
+        owner->callObserver([error](const dnssd::AdvertiserInterface::Listener& observer){ observer.onAdvertiserErrorAsync(error); });
         owner->unregisterService();
         return;
     }
 }
 
-dnssd::Error dnssd::BonjourAdvertiserImpl::registerService(const std::string& serviceName, uint16_t port) noexcept
+dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& serviceName, uint16_t port) noexcept
 {
     Error error(DNSServiceRegister(&mServiceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
                                    htons(port), 0, nullptr, registerServiceCallBack, this));
@@ -42,7 +42,7 @@ dnssd::Error dnssd::BonjourAdvertiserImpl::registerService(const std::string& se
     return Error(DNSServiceProcessResult(mServiceRef));
 }
 
-dnssd::Error dnssd::BonjourAdvertiserImpl::registerService(
+dnssd::Error dnssd::BonjourAdvertiser::registerService(
     const std::string &serviceName, uint16_t port,
     const TXTRecord &txtRecord) noexcept
 {
@@ -57,7 +57,7 @@ dnssd::Error dnssd::BonjourAdvertiserImpl::registerService(
     return Error(DNSServiceProcessResult(mServiceRef));
 }
 
-dnssd::Error dnssd::BonjourAdvertiserImpl::registerService(
+dnssd::Error dnssd::BonjourAdvertiser::registerService(
     const std::string &serviceName, uint16_t port,
     const std::map<std::string, std::string>& keysValues) noexcept
 {
@@ -86,7 +86,7 @@ dnssd::Error dnssd::BonjourAdvertiserImpl::registerService(
 }
 
 
-void dnssd::BonjourAdvertiserImpl::unregisterService() noexcept
+void dnssd::BonjourAdvertiser::unregisterService() noexcept
 {
     if (mServiceRef) {
         DNSServiceRefDeallocate(mServiceRef);
@@ -94,7 +94,7 @@ void dnssd::BonjourAdvertiserImpl::unregisterService() noexcept
     }
 }
 
-void dnssd::BonjourAdvertiserImpl::callObserver(std::function<void(const Advertiser::Listener&)> callback) noexcept
+void dnssd::BonjourAdvertiser::callObserver(std::function<void(const Listener&)> callback) noexcept
 {
     callback(mListener);
 }

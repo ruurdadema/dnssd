@@ -6,10 +6,10 @@ _This is a work In Progress! Don't expect this library to be production ready._
 ## Prerequisites
 
 * C++11 (or higher)
+* CMake (3.15 or higher)
 
 ### MacOS
-
-* CMake  
+  
 * XCode
 
 ### Windows

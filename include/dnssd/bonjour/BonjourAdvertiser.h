@@ -5,16 +5,18 @@
 #pragma once
 
 #include "../common/Error.h"
-#include "../Advertiser.h"
+#include "../common/AdvertiserInterface.h"
 
 #include <map>
 
 namespace dnssd {
 
-    class BonjourAdvertiserImpl : public Advertiser::Impl
+    class BonjourAdvertiser : public AdvertiserInterface
     {
     public:
-        explicit BonjourAdvertiserImpl(const Advertiser::Listener& listener);
+        using Listener = AdvertiserInterface::Listener;
+
+        explicit BonjourAdvertiser(const Listener& listener);
 
         Error registerService(const std::string& serviceName, uint16_t port) noexcept override;
         Error registerService(const std::string& serviceName, uint16_t port, const TXTRecord& txtRecord) noexcept override;
@@ -23,11 +25,11 @@ namespace dnssd {
                               const std::map<std::string, std::string>& keysValues) noexcept override;
 
         void unregisterService() noexcept override;
-        void callObserver(std::function<void(const Advertiser::Listener&)>) noexcept;
+        void callObserver(std::function<void(const Listener&)>) noexcept;
 
     private:
         DNSServiceRef mServiceRef = nullptr; // TODO: Make this a ScopedDNSServiceRef
-        const Advertiser::Listener& mListener;
+        const Listener& mListener;
     };
 
 } // namespace dnssd

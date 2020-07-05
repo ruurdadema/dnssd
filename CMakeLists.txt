@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 11)
 add_library(${PROJECT_NAME} STATIC
         include/dnssd/Browser.h
         include/dnssd/bonjour/Bonjour.h
-        include/dnssd/bonjour/BonjourAdvertiserImpl.h
+        include/dnssd/bonjour/BonjourAdvertiser.h
         include/dnssd/bonjour/BonjourBrowserImpl.h
         include/dnssd/bonjour/ScopedDNSServiceRef.h
         include/dnssd/bonjour/Service.h
@@ -15,7 +15,7 @@ add_library(${PROJECT_NAME} STATIC
         src/Advertiser.cpp
         src/Browser.cpp
         src/ServiceDescription.cpp
-        src/bonjour/BonjourAdvertiserImpl.cpp
+        src/bonjour/BonjourAdvertiser.cpp
         src/bonjour/BonjourBrowserImpl.cpp
         src/common/Log.cpp
         src/common/Error.cpp
@@ -24,7 +24,7 @@ add_library(${PROJECT_NAME} STATIC
         src/bonjour/Service.cpp
         src/bonjour/SharedConnection.cpp
         src/bonjour/TXTRecord.cpp
-        )
+        include/dnssd/common/AdvertiserInterface.h)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
