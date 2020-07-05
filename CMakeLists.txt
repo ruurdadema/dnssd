@@ -20,10 +20,10 @@ add_library(${PROJECT_NAME} STATIC
         src/internal/Debug.cpp
         src/internal/Error.cpp
         src/internal/Error.cpp/
-        src/internal/ScopedDNSServiceRef.cpp
-        src/internal/Service.cpp
-        src/internal/SharedConnection.cpp
-        src/internal/TXTRecord.cpp
+        src/bonjour/ScopedDNSServiceRef.cpp
+        src/bonjour/Service.cpp
+        src/bonjour/SharedConnection.cpp
+        src/bonjour/TXTRecord.cpp
         )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
