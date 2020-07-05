@@ -27,7 +27,6 @@ namespace dnssd {
 
         [[nodiscard]] bool reportIfError(const Error& error) const noexcept;
 
-        void callListener(const std::function<void(const Listener&)>&) const noexcept;
 
         void browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags inFlags, uint32_t interfaceIndex,
                          DNSServiceErrorType errorCode, const char* name, const char* type,
@@ -37,7 +36,6 @@ namespace dnssd {
 
     private:
         SharedConnection mSharedConnection;
-        const Listener& mListener;
         std::map<std::string, ScopedDNSServiceRef> mBrowsers;
         std::map<std::string, Service> mServices;
         std::atomic_bool mKeepGoing = ATOMIC_VAR_INIT(true);

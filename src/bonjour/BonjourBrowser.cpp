@@ -14,7 +14,7 @@ void DNSSD_API browseReply2(DNSServiceRef browseServiceRef, DNSServiceFlags flag
 }
 
 dnssd::BonjourBrowser::BonjourBrowser(const CommonBrowserInterface::Listener& listener):
-    mListener(listener),
+    CommonBrowserInterface(listener),
     mThread(std::thread(&BonjourBrowser::thread, this))
 {
 }
@@ -78,10 +78,6 @@ void dnssd::BonjourBrowser::browseReply(DNSServiceRef browseServiceRef, DNSServi
     DNSSD_LOG_DEBUG("< browseReply exit (" << std::this_thread::get_id() << ")" << std::endl)
 }
 
-void dnssd::BonjourBrowser::callListener(const std::function<void(const Listener&)>& callback) const noexcept
-{
-    callback(mListener);
-}
 bool dnssd::BonjourBrowser::reportIfError(const dnssd::Error& error) const noexcept
 {
     if (error)

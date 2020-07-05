@@ -25,8 +25,14 @@ namespace dnssd {
             virtual void onBrowserErrorAsync(Error error) const noexcept = 0;
         };
 
+        CommonBrowserInterface(const Listener& listener) : mListener(listener) {}
         virtual ~CommonBrowserInterface() = default;
         virtual Error browseFor(const std::string& service) = 0;
+
+        void callListener(const std::function<void(const Listener&)>& callback) const noexcept { callback(mListener); }
+
+    private:
+        const Listener& mListener;
     };
 
 } // namespace dnssd
