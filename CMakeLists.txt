@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(dns-sd-cpp VERSION 0.0.1)
+project(dnssd-cpp VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -43,8 +43,8 @@ if (WIN32)
     endif()
 endif()
 
-add_executable(dns-sd-advertiser test/dns-sd-advertiser.cpp)
-target_link_libraries(dns-sd-advertiser ${PROJECT_NAME})
+add_executable(dnssd-advertiser test/dns-sd-advertiser.cpp)
+target_link_libraries(dnssd-advertiser ${PROJECT_NAME})
 
-add_executable(dns-sd-browser test/dns-sd-browser.cpp)
-target_link_libraries(dns-sd-browser ${PROJECT_NAME})
+add_executable(dnssd-browser test/dns-sd-browser.cpp)
+target_link_libraries(dnssd-browser ${PROJECT_NAME})
