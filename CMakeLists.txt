@@ -12,7 +12,6 @@ add_library(${PROJECT_NAME} STATIC
         include/dnssd/bonjour/ScopedDNSServiceRef.h
         include/dnssd/bonjour/Service.h
         include/dnssd/bonjour/SharedConnection.h
-        src/Browser.cpp
         src/ServiceDescription.cpp
         src/bonjour/BonjourAdvertiser.cpp
         src/bonjour/BonjourBrowser.cpp
