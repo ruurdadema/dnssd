@@ -1,7 +1,3 @@
-//
-// Created by Ruurd Adema on 05/07/2020.
-//
-
 #pragma once
 
 #include "../common/TxtRecord.h"

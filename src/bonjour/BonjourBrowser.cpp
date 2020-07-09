@@ -1,7 +1,3 @@
-//
-// Created by Ruurd Adema on 04/07/2020.
-//
-
 #include <dnssd/bonjour/BonjourBrowser.h>
 #include <dnssd/bonjour/Service.h>
 

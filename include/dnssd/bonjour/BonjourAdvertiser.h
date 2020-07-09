@@ -1,7 +1,3 @@
-//
-// Created by Ruurd Adema on 04/07/2020.
-//
-
 #pragma once
 
 #include "../common/Error.h"

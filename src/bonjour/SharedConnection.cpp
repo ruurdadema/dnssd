@@ -1,7 +1,3 @@
-//
-// Created by Ruurd Adema on 28/06/2020.
-//
-
 #include <dnssd/bonjour/SharedConnection.h>
 #include <dnssd/common/Error.h>
 #include <dnssd/common/Log.h>

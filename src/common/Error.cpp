@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    DNSSDError.cpp
-    Created: 21 Jun 2020 8:04:45pm
-    Author:  Ruurd Adema
-
-  ==============================================================================
-*/
-
 #include <dnssd/common/Error.h>
 #include <sstream>
 #include <utility>

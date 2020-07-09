@@ -1,13 +1,3 @@
-/*
-  ==============================================================================
-
-    BonjourTxtRecord.cpp
-    Created: 21 Jun 2020 2:02:22pm
-    Author:  Ruurd Adema
-
-  ==============================================================================
-*/
-
 #include <dnssd/bonjour/BonjourTxtRecord.h>
 #include <map>
 
