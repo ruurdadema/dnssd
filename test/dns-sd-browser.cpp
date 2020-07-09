@@ -37,12 +37,18 @@ public:
     }
 };
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
+    if (argc < 2)
+    {
+        std::cout << "Expected an argument which specifies the servicetype to browse for" << std::endl;
+        return -1;
+    }
+
     BrowserListener listener;
     dnssd::Browser browser(listener);
 
-    if (auto error = browser.browseFor("_http._tcp."))
+    if (auto error = browser.browseFor(argv[1]))
     {
         std::cout << "Error: " << error.description() << std::endl;
         return -1;
