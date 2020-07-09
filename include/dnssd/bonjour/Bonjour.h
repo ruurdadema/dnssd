@@ -5,7 +5,7 @@
 #pragma once
 
 #ifdef _WINDOWS_
-#error "winsock2.h has to be included before windows.h please include this headerfile before that including windows.h"
+#error "winsock2.h has to be included before windows.h please include this headerfile before the one including windows.h"
 #endif
 
 #ifdef _WIN32
