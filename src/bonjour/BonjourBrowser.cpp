@@ -99,7 +99,7 @@ dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
     }
 
     // Initialize with the shared connection to pass it to DNSServiceBrowse
-    DNSServiceRef browsingServiceRef = mSharedConnection;
+    DNSServiceRef browsingServiceRef = mSharedConnection.serviceRef();
 
     if (auto error = dnssd::Error(DNSServiceBrowse(
         &browsingServiceRef,
@@ -130,7 +130,7 @@ void dnssd::BonjourBrowser::thread()
     int fd = -1;
     int nfds = -1;
 
-    fd = DNSServiceRefSockFD(mSharedConnection);
+    fd = DNSServiceRefSockFD(mSharedConnection.serviceRef());
 
     if (fd < 0)
     {
@@ -166,7 +166,7 @@ void dnssd::BonjourBrowser::thread()
             if (FD_ISSET(fd, &readfds))
             {
                 DNSSD_LOG_DEBUG("> Main loop (FD_ISSET == true)" << std::endl)
-                (void) reportIfError(Error(DNSServiceProcessResult(mSharedConnection)));
+                (void) reportIfError(Error(DNSServiceProcessResult(mSharedConnection.serviceRef())));
             }
             else
             {

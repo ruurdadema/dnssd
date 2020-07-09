@@ -49,7 +49,7 @@ void dnssd::Service::resolveOnInterface(uint32_t index)
 
     mDescription.interfaces.insert({index, {}});
 
-    DNSServiceRef resolveServiceRef = mOwner.sharedConnection();
+    DNSServiceRef resolveServiceRef = mOwner.sharedConnection().serviceRef();
 
     if (mOwner.reportIfError(Error(DNSServiceResolve(&resolveServiceRef, kDNSServiceFlagsShareConnection,
         index, mDescription.name.c_str(),mDescription.type.c_str(), mDescription.domain.c_str(),
@@ -77,7 +77,7 @@ void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags f
         listener.onServiceResolvedAsync(mDescription, interfaceIndex);
     });
 
-    DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection();
+    DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection().serviceRef();
 
     if (mOwner.reportIfError(Error(DNSServiceGetAddrInfo(&getAddrInfoServiceRef,
         kDNSServiceFlagsShareConnection | kDNSServiceFlagsTimeout, interfaceIndex,

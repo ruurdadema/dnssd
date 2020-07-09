@@ -12,7 +12,7 @@ namespace dnssd {
     {
     public:
         SharedConnection();
-        operator DNSServiceRef() const noexcept { return mServiceRef; }
+        DNSServiceRef serviceRef() const noexcept { return mServiceRef; }
 
     private:
         ScopedDNSServiceRef mServiceRef;
