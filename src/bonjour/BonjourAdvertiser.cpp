@@ -39,8 +39,19 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& servic
 {
     DNSServiceRef serviceRef = nullptr;
 
-    if (auto error = Error(DNSServiceRegister(&serviceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
-                                   htons(port), 0, nullptr, registerServiceCallBack, this)))
+    if (auto error = Error(DNSServiceRegister(
+        &serviceRef,
+        0,
+        0,
+        nullptr,
+        serviceName.c_str(),
+        nullptr,
+        nullptr,
+        htons(port),
+        0,
+        nullptr,
+        registerServiceCallBack,
+        this)))
     {
         return error;
     };
@@ -57,36 +68,17 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
     DNSServiceRef serviceRef = nullptr;
     auto record = BonjourTXTRecord(txtRecord);
 
-    if (auto error = Error(DNSServiceRegister(&serviceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
-                                         htons(port), record.length(), record.bytesPtr(), registerServiceCallBack,
-                                         this)))
-    {
-        return error;
-    }
-
-    mServiceRef = serviceRef;
-
-    return Error(DNSServiceProcessResult(mServiceRef));
-}
-
-dnssd::Error dnssd::BonjourAdvertiser::registerService(
-    const std::string &serviceName, uint16_t port,
-    const std::map<std::string, std::string>& keysValues) noexcept
-{
-    BonjourTXTRecord txtRecord = BonjourTXTRecord(keysValues);
-
-    DNSServiceRef serviceRef = nullptr;
-
     if (auto error = Error(DNSServiceRegister(
         &serviceRef,
         0,
         0,
         nullptr,
         serviceName.c_str(),
-        nullptr, nullptr,
+        nullptr,
+        nullptr,
         htons(port),
-        txtRecord.length(),
-        txtRecord.bytesPtr(),
+        record.length(),
+        record.bytesPtr(),
         registerServiceCallBack,
         this)))
     {
@@ -100,7 +92,8 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
 
 void dnssd::BonjourAdvertiser::unregisterService() noexcept
 {
-    if (mServiceRef) {
+    if (mServiceRef)
+    {
         DNSServiceRefDeallocate(mServiceRef);
         mServiceRef = nullptr;
     }

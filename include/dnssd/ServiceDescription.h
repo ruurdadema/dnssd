@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "common/TxtRecord.h"
+
 #include <string>
 #include <map>
 #include <set>
@@ -24,7 +26,7 @@ namespace dnssd {
         std::string domain;
         std::string hostTarget;
         uint16_t port;
-        std::map<std::string, std::string> txtRecord;
+        TxtRecord txtRecord;
         std::map<uint32_t, std::set<std::string>> interfaces; // interfaceIndex, addresses
 
         [[nodiscard]] std::string description() const noexcept;

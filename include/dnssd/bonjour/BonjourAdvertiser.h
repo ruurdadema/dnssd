@@ -21,9 +21,6 @@ namespace dnssd {
 
         Error registerService(const std::string& serviceName, uint16_t port) noexcept override;
         Error registerService(const std::string& serviceName, uint16_t port, const TxtRecord& txtRecord) noexcept override;
-        Error registerService(const std::string& serviceName,
-                              uint16_t port,
-                              const std::map<std::string, std::string>& keysValues) noexcept override;
 
         void unregisterService() noexcept override;
 

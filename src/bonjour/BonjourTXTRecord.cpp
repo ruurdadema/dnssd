@@ -13,20 +13,15 @@
 
 using namespace dnssd;
 
-BonjourTXTRecord::BonjourTXTRecord(const std::map<std::string, std::string>& keysValues)
+BonjourTXTRecord::BonjourTXTRecord(const TxtRecord& txtRecord)
 {
     // This way (0 and nullptr) the dns-sd will arrange allocation of a buffer
     TXTRecordCreate(&mTxtRecordRef, 0, nullptr);
 
-    for (auto& keyValue : keysValues)
+    for (auto& kv : txtRecord)
     {
-        setValue(keyValue.first, keyValue.second);
+        setValue(kv.first, kv.second);
     }
-}
-
-BonjourTXTRecord::BonjourTXTRecord(const TxtRecord& txtRecord)
-{
-    BonjourTXTRecord(txtRecord.txtRecord());
 }
 
 BonjourTXTRecord::~BonjourTXTRecord()

@@ -21,7 +21,6 @@ namespace dnssd {
     class BonjourTXTRecord
     {
     public:
-        explicit BonjourTXTRecord(const std::map<std::string, std::string>& keysValues);
         explicit BonjourTXTRecord(const TxtRecord& txtRecord);
         ~BonjourTXTRecord();
 
@@ -31,7 +30,7 @@ namespace dnssd {
         uint16_t length() const noexcept;
         const void* bytesPtr() const noexcept;
 
-        static std::map<std::string, std::string> getTxtRecordFromRawBytes(const unsigned char* txtRecord, uint16_t txtRecordLength) noexcept;
+        static TxtRecord getTxtRecordFromRawBytes(const unsigned char* txtRecord, uint16_t txtRecordLength) noexcept;
 
     private:
         TXTRecordRef mTxtRecordRef;
