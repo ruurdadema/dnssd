@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    BonjourTXTRecord.h
+    BonjourTxtRecord.h
     Created: 21 Jun 2020 2:02:22pm
     Author:  Ruurd Adema
 
@@ -18,11 +18,11 @@
 
 namespace dnssd {
 
-    class BonjourTXTRecord
+    class BonjourTxtRecord
     {
     public:
-        explicit BonjourTXTRecord(const TxtRecord& txtRecord);
-        ~BonjourTXTRecord();
+        explicit BonjourTxtRecord(const TxtRecord& txtRecord);
+        ~BonjourTxtRecord();
 
         Error setValue(const std::string& key, const std::string& value) noexcept;
         Error setValue(const std::string& key) noexcept;
