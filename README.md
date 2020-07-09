@@ -20,6 +20,52 @@ This library uses the Bonjour SDK and expects it to be in the default install lo
 ### Linux - Not supported yet
 Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
+## How to use
+
+### Browsing
+
+    #include <dnssd/Browser.h>
+
+    dnssd::Browser browser;
+    
+    browser.onServiceDiscoveredAsync = [](const dnssd::ServiceDescription& service)
+    {
+        std::cout << "Service discovered: " << service.description() << std::endl;
+    };
+
+    browser.onServiceRemovedAsync = [](const dnssd::ServiceDescription& service)
+    {
+        std::cout << "Service removed: " << service.description() << std::endl;
+    };
+
+    browser.onBrowserErrorAsync = [](dnssd::Error error)
+    {
+        std::cout << "Error: " << error.description() << std::endl;
+    };
+
+    if (auto error = browser.browseFor("_http._tcp"))
+    {
+        std::cout << "Error: " << error.description() << std::endl;
+    };
+    
+### Advertising
+
+    #include <dnssd/Advertiser.h>
+
+    dnssd::Advertiser advertiser;
+
+    advertiser.onAdvertiserErrorAsync = [](const dnssd::Error& error)
+    {
+        std::cout << "Error: " << error.description() << std::endl;
+    };
+
+    dnssd::TxtRecord txtRecord = {{"key1", "value1"}, {"key2", "value2"}};
+
+    if (auto error = advertiser.registerService("_http._tcp", 80, txtRecord))
+    {
+        std::cout << "Error: " << error.description() << std::endl;
+    }
+
 ## How to build
 
 ## As subdirectory
