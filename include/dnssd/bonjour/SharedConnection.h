@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "ScopedDNSServiceRef.h"
+#include "ScopedDnsServiceRef.h"
 
 namespace dnssd {
 
@@ -15,7 +15,7 @@ namespace dnssd {
         DNSServiceRef serviceRef() const noexcept { return mServiceRef; }
 
     private:
-        ScopedDNSServiceRef mServiceRef;
+        ScopedDnsServiceRef mServiceRef;
     };
 
 } // namespace dnssd

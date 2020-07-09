@@ -36,7 +36,7 @@ namespace dnssd {
 
     private:
         SharedConnection mSharedConnection;
-        std::map<std::string, ScopedDNSServiceRef> mBrowsers;
+        std::map<std::string, ScopedDnsServiceRef> mBrowsers;
         std::map<std::string, Service> mServices;
         std::atomic_bool mKeepGoing = ATOMIC_VAR_INIT(true);
         std::thread mThread;

@@ -113,8 +113,8 @@ dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
         return error;
     }
 
-    mBrowsers.insert({service, ScopedDNSServiceRef(browsingServiceRef)});
-    // From here the serviceRef is under RAII inside the ScopedDNSServiceRef class
+    mBrowsers.insert({service, ScopedDnsServiceRef(browsingServiceRef)});
+    // From here the serviceRef is under RAII inside the ScopedDnsServiceRef class
 
     return dnssd::Error();
 }

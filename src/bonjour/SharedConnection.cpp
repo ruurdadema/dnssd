@@ -14,5 +14,5 @@ dnssd::SharedConnection::SharedConnection()
         DNSSD_LOG_DEBUG(error.description())
         throw Exception(error);
     }
-    mServiceRef = ref; // From here on the ref is under RAII inside a ScopedDNSServiceRef class
+    mServiceRef = ref; // From here on the ref is under RAII inside a ScopedDnsServiceRef class
 }

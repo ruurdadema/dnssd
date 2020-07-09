@@ -55,7 +55,7 @@ void dnssd::Service::resolveOnInterface(uint32_t index)
         index, mDescription.name.c_str(),mDescription.type.c_str(), mDescription.domain.c_str(),
         ::resolveCallBack, this)))) { return; }
 
-    mResolvers.insert({index, ScopedDNSServiceRef(resolveServiceRef)});
+    mResolvers.insert({index, ScopedDnsServiceRef(resolveServiceRef)});
 }
 
 void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags flags, uint32_t interfaceIndex,
@@ -86,7 +86,7 @@ void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags f
         return;
     }
 
-    mGetAddrs.insert({interfaceIndex, ScopedDNSServiceRef(getAddrInfoServiceRef)});
+    mGetAddrs.insert({interfaceIndex, ScopedDnsServiceRef(getAddrInfoServiceRef)});
 
     DNSSD_LOG_DEBUG("< resolveCallBack exit (" << std::this_thread::get_id() << ")" << std::endl)
 }

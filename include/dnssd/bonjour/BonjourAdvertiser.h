@@ -6,7 +6,7 @@
 
 #include "../common/Error.h"
 #include "../common/CommonAdvertiserInterface.h"
-#include "ScopedDNSServiceRef.h"
+#include "ScopedDnsServiceRef.h"
 
 #include <map>
 
@@ -25,7 +25,7 @@ namespace dnssd {
         void unregisterService() noexcept override;
 
     private:
-        ScopedDNSServiceRef mServiceRef;
+        ScopedDnsServiceRef mServiceRef;
     };
 
 } // namespace dnssd
