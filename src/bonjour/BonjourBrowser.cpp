@@ -9,9 +9,7 @@ void DNSSD_API browseReply2(DNSServiceRef browseServiceRef, DNSServiceFlags flag
     browser->browseReply(browseServiceRef, flags, interfaceIndex, errorCode, name, type, domain);
 }
 
-dnssd::BonjourBrowser::BonjourBrowser(const CommonBrowserInterface::Listener& listener):
-    CommonBrowserInterface(listener),
-    mThread(std::thread(&BonjourBrowser::thread, this))
+dnssd::BonjourBrowser::BonjourBrowser() : mThread(std::thread(&BonjourBrowser::thread, this))
 {
 }
 
@@ -41,9 +39,7 @@ void dnssd::BonjourBrowser::browseReply(DNSServiceRef browseServiceRef, DNSServi
         if (service == mServices.end())
         {
             service = mServices.insert({fullname, Service(fullname, name, type, domain, *this)}).first;
-            callListener([&service](const CommonBrowserInterface::Listener& observer){
-                observer.onServiceDiscoveredAsync(service->second.description());
-            });
+            if (onServiceDiscoveredAsync) { onServiceDiscoveredAsync(service->second.description()); }
         }
 
         service->second.resolveOnInterface(interfaceIndex);
@@ -62,9 +58,7 @@ void dnssd::BonjourBrowser::browseReply(DNSServiceRef browseServiceRef, DNSServi
         if (foundService->second.removeInterface(interfaceIndex) == 0)
         {
             // We just removed the last interface
-            callListener([&foundService](const CommonBrowserInterface::Listener& observer){
-                observer.onServiceRemovedAsync(foundService->second.description());
-            });
+            if (onServiceRemovedAsync) { onServiceRemovedAsync(foundService->second.description()); }
 
             // Remove the BrowseResult (as there are not interfaces left)
             mServices.erase(foundService);
@@ -78,9 +72,7 @@ bool dnssd::BonjourBrowser::reportIfError(const dnssd::Error& error) const noexc
 {
     if (error)
     {
-        callListener([error](const Listener& listener) {
-            listener.onBrowserErrorAsync(error);
-        });
+        if (onBrowserErrorAsync) { onBrowserErrorAsync(error); }
         return true;
     }
     return false;

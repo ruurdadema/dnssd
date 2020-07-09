@@ -14,9 +14,7 @@ namespace dnssd {
     class BonjourBrowser : public CommonBrowserInterface
     {
     public:
-        using Listener = CommonBrowserInterface::Listener;
-
-        explicit BonjourBrowser(const Listener& listener);
+        explicit BonjourBrowser();
         ~BonjourBrowser() override;
 
         Error browseFor(const std::string& service) override;

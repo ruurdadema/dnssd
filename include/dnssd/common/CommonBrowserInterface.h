@@ -8,27 +8,17 @@ namespace dnssd {
     class CommonBrowserInterface
     {
     public:
-        class Listener
-        {
-        public:
-            virtual ~Listener() = default;
-
-            virtual void onServiceDiscoveredAsync(const ServiceDescription& service) const noexcept = 0;
-            virtual void onServiceRemovedAsync(const ServiceDescription& service) const noexcept = 0;
-            virtual void onServiceResolvedAsync(const ServiceDescription& service, uint32_t interfaceIndex) const noexcept = 0;
-            virtual void onAddressAddedAsync(const ServiceDescription& service, const std::string& address, uint32_t interfaceIndex) const noexcept = 0;
-            virtual void onAddressRemovedAsync(const ServiceDescription& service, const std::string& address, uint32_t interfaceIndex) const noexcept = 0;
-            virtual void onBrowserErrorAsync(Error error) const noexcept = 0;
-        };
-
-        explicit CommonBrowserInterface(const Listener& listener) : mListener(listener) {}
+        CommonBrowserInterface() = default;
         virtual ~CommonBrowserInterface() = default;
+
+        std::function<void(const ServiceDescription&)> onServiceDiscoveredAsync;
+        std::function<void(const ServiceDescription&)> onServiceRemovedAsync;
+        std::function<void(const ServiceDescription&, uint32_t)> onServiceResolvedAsync;
+        std::function<void(const ServiceDescription&, const std::string&, uint32_t)> onAddressAddedAsync;
+        std::function<void(const ServiceDescription&, const std::string&, uint32_t)> onAddressRemovedAsync;
+        std::function<void(const Error& error)> onBrowserErrorAsync;
+
         virtual Error browseFor(const std::string& service) = 0;
-
-        void callListener(const std::function<void(const Listener&)>& callback) const noexcept { callback(mListener); }
-
-    private:
-        const Listener& mListener;
     };
 
 } // namespace dnssd
