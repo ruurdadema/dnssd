@@ -4,16 +4,6 @@
 #include <iostream>
 #include <vector>
 
-class AdvertiserListener : public dnssd::Advertiser::Listener
-{
-public:
-
-    void onAdvertiserErrorAsync(dnssd::Error error) const noexcept override
-    {
-        std::cout << "Error: " << error.description() << std::endl;
-    }
-};
-
 int main(int argc, char* argv[])
 {
     std::vector<std::string> args;
@@ -53,8 +43,11 @@ int main(int argc, char* argv[])
         }
     }
 
-    AdvertiserListener listener;
-    dnssd::Advertiser advertiser(listener);
+    dnssd::Advertiser advertiser;
+    advertiser.onAdvertiserErrorAsync = [](const dnssd::Error& error)
+    {
+        std::cout << "Error: " << error.description() << std::endl;
+    };
 
     if (auto error = advertiser.registerService(args[0], portNumber, txtRecord))
     {

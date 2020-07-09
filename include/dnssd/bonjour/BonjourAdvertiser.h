@@ -11,9 +11,7 @@ namespace dnssd {
     class BonjourAdvertiser : public CommonAdvertiserInterface
     {
     public:
-        using Listener = CommonAdvertiserInterface::Listener;
-
-        explicit BonjourAdvertiser(const Listener& listener);
+        explicit BonjourAdvertiser() = default;
 
         Error registerService(const std::string& serviceName, uint16_t port) noexcept override;
         Error registerService(const std::string& serviceName, uint16_t port, const TxtRecord& txtRecord) noexcept override;

@@ -4,11 +4,6 @@
 #include <iostream>
 #include <thread>
 
-dnssd::BonjourAdvertiser::BonjourAdvertiser(const Listener& listener) :
-    CommonAdvertiserInterface(listener)
-{
-}
-
 static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServiceFlags flags,
                                               DNSServiceErrorType errorCode, const char* serviceName,
                                               const char* regType, const char* replyDomain, void* context)
@@ -24,8 +19,7 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
     if (error)
     {
         auto* owner = static_cast<dnssd::BonjourAdvertiser*>(context);
-        owner->callListener([error](const dnssd::CommonAdvertiserInterface::Listener& observer)
-                            { observer.onAdvertiserErrorAsync(error); });
+        if (owner->onAdvertiserErrorAsync) { owner->onAdvertiserErrorAsync(error); }
         owner->unregisterService();
         return;
     }
