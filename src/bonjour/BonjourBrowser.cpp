@@ -1,7 +1,3 @@
-//
-// Created by Ruurd Adema on 04/07/2020.
-//
-
 #include <dnssd/bonjour/BonjourBrowser.h>
 #include <dnssd/bonjour/Service.h>
 
@@ -13,9 +9,7 @@ void DNSSD_API browseReply2(DNSServiceRef browseServiceRef, DNSServiceFlags flag
     browser->browseReply(browseServiceRef, flags, interfaceIndex, errorCode, name, type, domain);
 }
 
-dnssd::BonjourBrowser::BonjourBrowser(const CommonBrowserInterface::Listener& listener):
-    CommonBrowserInterface(listener),
-    mThread(std::thread(&BonjourBrowser::thread, this))
+dnssd::BonjourBrowser::BonjourBrowser() : mThread(std::thread(&BonjourBrowser::thread, this))
 {
 }
 
@@ -45,9 +39,7 @@ void dnssd::BonjourBrowser::browseReply(DNSServiceRef browseServiceRef, DNSServi
         if (service == mServices.end())
         {
             service = mServices.insert({fullname, Service(fullname, name, type, domain, *this)}).first;
-            callListener([&service](const CommonBrowserInterface::Listener& observer){
-                observer.onServiceDiscoveredAsync(service->second.description());
-            });
+            if (onServiceDiscoveredAsync) { onServiceDiscoveredAsync(service->second.description()); }
         }
 
         service->second.resolveOnInterface(interfaceIndex);
@@ -66,9 +58,7 @@ void dnssd::BonjourBrowser::browseReply(DNSServiceRef browseServiceRef, DNSServi
         if (foundService->second.removeInterface(interfaceIndex) == 0)
         {
             // We just removed the last interface
-            callListener([&foundService](const CommonBrowserInterface::Listener& observer){
-                observer.onServiceRemovedAsync(foundService->second.description());
-            });
+            if (onServiceRemovedAsync) { onServiceRemovedAsync(foundService->second.description()); }
 
             // Remove the BrowseResult (as there are not interfaces left)
             mServices.erase(foundService);
@@ -82,9 +72,7 @@ bool dnssd::BonjourBrowser::reportIfError(const dnssd::Error& error) const noexc
 {
     if (error)
     {
-        callListener([error](const Listener& listener) {
-            listener.onBrowserErrorAsync(error);
-        });
+        if (onBrowserErrorAsync) { onBrowserErrorAsync(error); }
         return true;
     }
     return false;
@@ -99,7 +87,7 @@ dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
     }
 
     // Initialize with the shared connection to pass it to DNSServiceBrowse
-    DNSServiceRef browsingServiceRef = mSharedConnection;
+    DNSServiceRef browsingServiceRef = mSharedConnection.serviceRef();
 
     if (auto error = dnssd::Error(DNSServiceBrowse(
         &browsingServiceRef,
@@ -113,8 +101,8 @@ dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
         return error;
     }
 
-    mBrowsers.insert({service, ScopedDNSServiceRef(browsingServiceRef)});
-    // From here the serviceRef is under RAII inside the ScopedDNSServiceRef class
+    mBrowsers.insert({service, ScopedDnsServiceRef(browsingServiceRef)});
+    // From here the serviceRef is under RAII inside the ScopedDnsServiceRef class
 
     return dnssd::Error();
 }
@@ -130,7 +118,7 @@ void dnssd::BonjourBrowser::thread()
     int fd = -1;
     int nfds = -1;
 
-    fd = DNSServiceRefSockFD(mSharedConnection);
+    fd = DNSServiceRefSockFD(mSharedConnection.serviceRef());
 
     if (fd < 0)
     {
@@ -166,7 +154,7 @@ void dnssd::BonjourBrowser::thread()
             if (FD_ISSET(fd, &readfds))
             {
                 DNSSD_LOG_DEBUG("> Main loop (FD_ISSET == true)" << std::endl)
-                (void) reportIfError(Error(DNSServiceProcessResult(mSharedConnection)));
+                (void) reportIfError(Error(DNSServiceProcessResult(mSharedConnection.serviceRef())));
             }
             else
             {

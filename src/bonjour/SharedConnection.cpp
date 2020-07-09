@@ -1,7 +1,3 @@
-//
-// Created by Ruurd Adema on 28/06/2020.
-//
-
 #include <dnssd/bonjour/SharedConnection.h>
 #include <dnssd/common/Error.h>
 #include <dnssd/common/Log.h>
@@ -14,5 +10,5 @@ dnssd::SharedConnection::SharedConnection()
         DNSSD_LOG_DEBUG(error.description())
         throw Exception(error);
     }
-    mServiceRef = ref; // From here on the ref is under RAII inside a ScopedDNSServiceRef class
+    mServiceRef = ref; // From here on the ref is under RAII inside a ScopedDnsServiceRef class
 }

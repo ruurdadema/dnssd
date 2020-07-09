@@ -1,16 +1,4 @@
-/*
-  ==============================================================================
-
-    Debug.h
-    Created: 24 Jun 2020 2:07:02pm
-    Author:  ruurd
-
-  ==============================================================================
-*/
-
 #pragma once
-
-// TODO: Rename this to Log.h
 
 #ifdef DNSSD_DEBUG
 #include <sstream>
@@ -27,6 +15,6 @@ void dnssd_debug_log(const std::string& str);
 #endif
 #else
 
-#define DNSSD_LOG_DEBUG(msg) { }
+#define DNSSD_LOG_DEBUG(msg) {}
 
 #endif

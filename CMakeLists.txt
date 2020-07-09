@@ -9,7 +9,7 @@ add_library(${PROJECT_NAME} STATIC
         include/dnssd/bonjour/Bonjour.h
         include/dnssd/bonjour/BonjourAdvertiser.h
         include/dnssd/bonjour/BonjourBrowser.h
-        include/dnssd/bonjour/ScopedDNSServiceRef.h
+        include/dnssd/bonjour/ScopedDnsServiceRef.h
         include/dnssd/bonjour/Service.h
         include/dnssd/bonjour/SharedConnection.h
         include/dnssd/common/CommonAdvertiserInterface.h
@@ -18,8 +18,8 @@ add_library(${PROJECT_NAME} STATIC
         src/ServiceDescription.cpp
         src/bonjour/BonjourAdvertiser.cpp
         src/bonjour/BonjourBrowser.cpp
-        src/bonjour/BonjourTXTRecord.cpp
-        src/bonjour/ScopedDNSServiceRef.cpp
+        src/bonjour/BonjourTxtRecord.cpp
+        src/bonjour/ScopedDnsServiceRef.cpp
         src/bonjour/Service.cpp
         src/bonjour/SharedConnection.cpp
         src/common/Error.cpp

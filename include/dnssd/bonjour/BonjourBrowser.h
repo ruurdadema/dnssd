@@ -1,7 +1,3 @@
-//
-// Created by Ruurd Adema on 04/07/2020.
-//
-
 #pragma once
 
 #include "../common/Log.h"
@@ -18,9 +14,7 @@ namespace dnssd {
     class BonjourBrowser : public CommonBrowserInterface
     {
     public:
-        using Listener = CommonBrowserInterface::Listener;
-
-        explicit BonjourBrowser(const Listener& listener);
+        explicit BonjourBrowser();
         ~BonjourBrowser() override;
 
         Error browseFor(const std::string& service) override;
@@ -36,7 +30,7 @@ namespace dnssd {
 
     private:
         SharedConnection mSharedConnection;
-        std::map<std::string, ScopedDNSServiceRef> mBrowsers;
+        std::map<std::string, ScopedDnsServiceRef> mBrowsers;
         std::map<std::string, Service> mServices;
         std::atomic_bool mKeepGoing = ATOMIC_VAR_INIT(true);
         std::thread mThread;

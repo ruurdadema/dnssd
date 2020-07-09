@@ -1,10 +1,6 @@
-//
-// Created by Ruurd Adema on 28/06/2020.
-//
-
 #pragma once
 
-#include "ScopedDNSServiceRef.h"
+#include "ScopedDnsServiceRef.h"
 
 namespace dnssd {
 
@@ -12,10 +8,10 @@ namespace dnssd {
     {
     public:
         SharedConnection();
-        operator DNSServiceRef() const noexcept { return mServiceRef; }
+        DNSServiceRef serviceRef() const noexcept { return mServiceRef.serviceRef(); }
 
     private:
-        ScopedDNSServiceRef mServiceRef;
+        ScopedDnsServiceRef mServiceRef;
     };
 
 } // namespace dnssd

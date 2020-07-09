@@ -1,14 +1,10 @@
-//
-// Created by Ruurd Adema on 28/06/2020.
-//
-
 #include <dnssd/bonjour/Service.h>
 #include <dnssd/common/Log.h>
 #include <dnssd/bonjour/BonjourBrowser.h>
 
 #include <thread>
 #include <dnssd/Browser.h>
-#include <dnssd/bonjour/BonjourTXTRecord.h>
+#include <dnssd/bonjour/BonjourTxtRecord.h>
 #include <map>
 
 void DNSSD_API resolveCallBack(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
@@ -49,13 +45,13 @@ void dnssd::Service::resolveOnInterface(uint32_t index)
 
     mDescription.interfaces.insert({index, {}});
 
-    DNSServiceRef resolveServiceRef = mOwner.sharedConnection();
+    DNSServiceRef resolveServiceRef = mOwner.sharedConnection().serviceRef();
 
     if (mOwner.reportIfError(Error(DNSServiceResolve(&resolveServiceRef, kDNSServiceFlagsShareConnection,
         index, mDescription.name.c_str(),mDescription.type.c_str(), mDescription.domain.c_str(),
         ::resolveCallBack, this)))) { return; }
 
-    mResolvers.insert({index, ScopedDNSServiceRef(resolveServiceRef)});
+    mResolvers.insert({index, ScopedDnsServiceRef(resolveServiceRef)});
 }
 
 void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags flags, uint32_t interfaceIndex,
@@ -69,15 +65,13 @@ void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags f
 
     mDescription.hostTarget = hosttarget;
     mDescription.port = port;
-    mDescription.txtRecord = BonjourTXTRecord::getTxtRecordFromRawBytes(txtRecord, txtLen);
+    mDescription.txtRecord = BonjourTxtRecord::getTxtRecordFromRawBytes(txtRecord, txtLen);
 
     DNSSD_LOG_DEBUG("- resolveCallBack: " << mDescription.description() << std::endl)
 
-    mOwner.callListener([this, interfaceIndex](const Browser::Listener& listener) {
-        listener.onServiceResolvedAsync(mDescription, interfaceIndex);
-    });
+    if (mOwner.onServiceResolvedAsync) { mOwner.onServiceResolvedAsync(mDescription, interfaceIndex); }
 
-    DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection();
+    DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection().serviceRef();
 
     if (mOwner.reportIfError(Error(DNSServiceGetAddrInfo(&getAddrInfoServiceRef,
         kDNSServiceFlagsShareConnection | kDNSServiceFlagsTimeout, interfaceIndex,
@@ -86,7 +80,7 @@ void dnssd::Service::resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags f
         return;
     }
 
-    mGetAddrs.insert({interfaceIndex, ScopedDNSServiceRef(getAddrInfoServiceRef)});
+    mGetAddrs.insert({interfaceIndex, ScopedDnsServiceRef(getAddrInfoServiceRef)});
 
     DNSSD_LOG_DEBUG("< resolveCallBack exit (" << std::this_thread::get_id() << ")" << std::endl)
 }
@@ -130,9 +124,7 @@ void dnssd::Service::getAddrInfoCallBack(DNSServiceRef sdRef, DNSServiceFlags fl
     if (foundInterface != mDescription.interfaces.end())
     {
         auto result = foundInterface->second.insert(ip_addr);
-        mOwner.callListener([this, interfaceIndex, &result](const Browser::Listener& observer){
-            observer.onAddressAddedAsync(mDescription, *result.first, interfaceIndex);
-        });
+        if (mOwner.onAddressAddedAsync) { mOwner.onAddressAddedAsync(mDescription, *result.first, interfaceIndex); }
     }
     else
     {
@@ -160,9 +152,7 @@ size_t dnssd::Service::removeInterface(uint32_t index)
     {
         for (auto& addr: foundInterface->second)
         {
-            mOwner.callListener([this, &addr, index](const Browser::Listener& listener) {
-                listener.onAddressRemovedAsync(mDescription, addr, index);
-            });
+            if (mOwner.onAddressRemovedAsync) { mOwner.onAddressRemovedAsync(mDescription, addr, index); }
         }
     }
 

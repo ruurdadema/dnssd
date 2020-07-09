@@ -1,17 +1,8 @@
-//
-// Created by Ruurd Adema on 04/07/2020.
-//
-
 #include <dnssd/bonjour/BonjourAdvertiser.h>
-#include <dnssd/bonjour/BonjourTXTRecord.h>
+#include <dnssd/bonjour/BonjourTxtRecord.h>
 
 #include <iostream>
 #include <thread>
-
-dnssd::BonjourAdvertiser::BonjourAdvertiser(const Listener& listener) :
-    CommonAdvertiserInterface(listener)
-{
-}
 
 static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServiceFlags flags,
                                               DNSServiceErrorType errorCode, const char* serviceName,
@@ -28,8 +19,7 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
     if (error)
     {
         auto* owner = static_cast<dnssd::BonjourAdvertiser*>(context);
-        owner->callListener([error](const dnssd::CommonAdvertiserInterface::Listener& observer)
-                            { observer.onAdvertiserErrorAsync(error); });
+        if (owner->onAdvertiserErrorAsync) { owner->onAdvertiserErrorAsync(error); }
         owner->unregisterService();
         return;
     }
@@ -39,15 +29,26 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& servic
 {
     DNSServiceRef serviceRef = nullptr;
 
-    if (auto error = Error(DNSServiceRegister(&serviceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
-                                   htons(port), 0, nullptr, registerServiceCallBack, this)))
+    if (auto error = Error(DNSServiceRegister(
+        &serviceRef,
+        0,
+        0,
+        nullptr,
+        serviceName.c_str(),
+        nullptr,
+        nullptr,
+        htons(port),
+        0,
+        nullptr,
+        registerServiceCallBack,
+        this)))
     {
         return error;
     };
 
     mServiceRef = serviceRef;
 
-    return Error(DNSServiceProcessResult(mServiceRef));
+    return Error(DNSServiceProcessResult(mServiceRef.serviceRef()));
 }
 
 dnssd::Error dnssd::BonjourAdvertiser::registerService(
@@ -55,27 +56,7 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
     const TxtRecord& txtRecord) noexcept
 {
     DNSServiceRef serviceRef = nullptr;
-    auto record = BonjourTXTRecord(txtRecord);
-
-    if (auto error = Error(DNSServiceRegister(&serviceRef, 0, 0, nullptr, serviceName.c_str(), nullptr, nullptr,
-                                         htons(port), record.length(), record.bytesPtr(), registerServiceCallBack,
-                                         this)))
-    {
-        return error;
-    }
-
-    mServiceRef = serviceRef;
-
-    return Error(DNSServiceProcessResult(mServiceRef));
-}
-
-dnssd::Error dnssd::BonjourAdvertiser::registerService(
-    const std::string &serviceName, uint16_t port,
-    const std::map<std::string, std::string>& keysValues) noexcept
-{
-    BonjourTXTRecord txtRecord = BonjourTXTRecord(keysValues);
-
-    DNSServiceRef serviceRef = nullptr;
+    auto record = BonjourTxtRecord(txtRecord);
 
     if (auto error = Error(DNSServiceRegister(
         &serviceRef,
@@ -83,10 +64,11 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
         0,
         nullptr,
         serviceName.c_str(),
-        nullptr, nullptr,
+        nullptr,
+        nullptr,
         htons(port),
-        txtRecord.length(),
-        txtRecord.bytesPtr(),
+        record.length(),
+        record.bytesPtr(),
         registerServiceCallBack,
         this)))
     {
@@ -95,13 +77,10 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
 
     mServiceRef = serviceRef;
 
-    return Error(DNSServiceProcessResult(mServiceRef));
+    return Error(DNSServiceProcessResult(mServiceRef.serviceRef()));
 }
 
 void dnssd::BonjourAdvertiser::unregisterService() noexcept
 {
-    if (mServiceRef) {
-        DNSServiceRefDeallocate(mServiceRef);
-        mServiceRef = nullptr;
-    }
+    mServiceRef = nullptr;
 }

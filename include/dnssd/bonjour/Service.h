@@ -1,11 +1,7 @@
-//
-// Created by Ruurd Adema on 28/06/2020.
-//
-
 #pragma once
 
 #include "dnssd/ServiceDescription.h"
-#include "dnssd/bonjour/ScopedDNSServiceRef.h"
+#include "dnssd/bonjour/ScopedDnsServiceRef.h"
 
 namespace dnssd {
 
@@ -33,8 +29,8 @@ namespace dnssd {
 
     private:
         const BonjourBrowser& mOwner;
-        std::map<uint32_t, ScopedDNSServiceRef> mResolvers;
-        std::map<uint32_t, ScopedDNSServiceRef> mGetAddrs;
+        std::map<uint32_t, ScopedDnsServiceRef> mResolvers;
+        std::map<uint32_t, ScopedDnsServiceRef> mGetAddrs;
         ServiceDescription mDescription;
     };
 

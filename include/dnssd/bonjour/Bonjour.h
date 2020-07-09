@@ -1,11 +1,7 @@
-//
-// Created by Ruurd Adema on 04/07/2020.
-//
-
 #pragma once
 
 #ifdef _WINDOWS_
-#error "winsock2.h has to be included before windows.h please include this headerfile before that including windows.h"
+#error "winsock2.h has to be included before windows.h please include this headerfile before the one including windows.h"
 #endif
 
 #ifdef _WIN32

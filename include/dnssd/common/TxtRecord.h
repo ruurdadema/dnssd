@@ -1,24 +1,10 @@
-//
-// Created by Ruurd Adema on 05/07/2020.
-//
-
 #pragma once
 
-#include <map>
 #include <string>
-#include <utility>
+#include <map>
 
 namespace dnssd {
 
-    class TxtRecord
-    {
-    public:
-        TxtRecord() = default;
-        explicit TxtRecord(std::map<std::string, std::string> keysValues) : mTxtRecord(std::move(keysValues)) {}
+    using TxtRecord = std::map<std::string, std::string>;
 
-        const std::map<std::string, std::string>& txtRecord() const noexcept { return mTxtRecord; }
-    private:
-        std::map<std::string, std::string> mTxtRecord;
-    };
-
-}
+} // namespace dnssd
