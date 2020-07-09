@@ -15,13 +15,13 @@ namespace dnssd {
         ~ScopedDnsServiceRef();
         ScopedDnsServiceRef(const ScopedDnsServiceRef&) = delete;
         ScopedDnsServiceRef(ScopedDnsServiceRef&& other) noexcept;
-        ScopedDnsServiceRef(const DNSServiceRef& serviceRef) noexcept;
+        explicit ScopedDnsServiceRef(const DNSServiceRef& serviceRef) noexcept;
 
         ScopedDnsServiceRef& operator=(const ScopedDnsServiceRef& other) = delete;
         ScopedDnsServiceRef& operator=(ScopedDnsServiceRef&& other);
-        ScopedDnsServiceRef& operator=(DNSServiceRef& serviceRef);
+        ScopedDnsServiceRef& operator=(DNSServiceRef serviceRef);
 
-        operator DNSServiceRef() const noexcept { return mServiceRef; }
+        DNSServiceRef serviceRef() const noexcept { return  mServiceRef; }
 
     private:
         DNSServiceRef mServiceRef = nullptr;

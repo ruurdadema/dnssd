@@ -58,7 +58,7 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& servic
 
     mServiceRef = serviceRef;
 
-    return Error(DNSServiceProcessResult(mServiceRef));
+    return Error(DNSServiceProcessResult(mServiceRef.serviceRef()));
 }
 
 dnssd::Error dnssd::BonjourAdvertiser::registerService(
@@ -87,14 +87,10 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
 
     mServiceRef = serviceRef;
 
-    return Error(DNSServiceProcessResult(mServiceRef));
+    return Error(DNSServiceProcessResult(mServiceRef.serviceRef()));
 }
 
 void dnssd::BonjourAdvertiser::unregisterService() noexcept
 {
-    if (mServiceRef)
-    {
-        DNSServiceRefDeallocate(mServiceRef);
-        mServiceRef = nullptr;
-    }
+    mServiceRef = nullptr;
 }

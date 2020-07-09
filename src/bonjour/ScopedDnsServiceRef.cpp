@@ -32,8 +32,13 @@ dnssd::ScopedDnsServiceRef& dnssd::ScopedDnsServiceRef::operator=(dnssd::ScopedD
     other.mServiceRef = nullptr;
     return *this;
 }
-dnssd::ScopedDnsServiceRef& dnssd::ScopedDnsServiceRef::operator=(DNSServiceRef& serviceRef)
+
+dnssd::ScopedDnsServiceRef& dnssd::ScopedDnsServiceRef::operator=(DNSServiceRef serviceRef)
 {
+    if (mServiceRef != nullptr)
+    {
+        DNSServiceRefDeallocate(mServiceRef);
+    }
     mServiceRef = serviceRef;
     return *this;
 }
