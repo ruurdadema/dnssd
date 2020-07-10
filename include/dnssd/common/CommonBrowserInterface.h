@@ -3,6 +3,8 @@
 #include "Error.h"
 #include "../ServiceDescription.h"
 
+#include <functional>
+
 namespace dnssd {
 
     class CommonBrowserInterface

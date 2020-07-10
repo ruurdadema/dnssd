@@ -19,7 +19,7 @@ namespace dnssd {
         TxtRecord txtRecord;
         std::map<uint32_t, std::set<std::string>> interfaces; // interfaceIndex, addresses
 
-        [[nodiscard]] std::string description() const noexcept;
+        std::string description() const noexcept;
     };
 
 } // namespace dnssd

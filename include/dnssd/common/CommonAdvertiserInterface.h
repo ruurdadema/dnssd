@@ -2,6 +2,8 @@
 
 #include "../common/TxtRecord.h"
 
+#include <functional>
+
 namespace dnssd {
 
     class CommonAdvertiserInterface

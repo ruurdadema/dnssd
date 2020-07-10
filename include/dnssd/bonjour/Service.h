@@ -18,7 +18,7 @@ namespace dnssd {
 
         void resolveOnInterface(uint32_t index);
         size_t removeInterface(uint32_t index);
-        [[nodiscard]] const ServiceDescription& description() const noexcept { return mDescription; }
+        const ServiceDescription& description() const noexcept { return mDescription; }
 
         void resolveCallBack(DNSServiceRef serviceRef, DNSServiceFlags flags, uint32_t interfaceIndex,
             DNSServiceErrorType errorCode, const char* fullname, const char* hosttarget,

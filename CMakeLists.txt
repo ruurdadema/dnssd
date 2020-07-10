@@ -42,6 +42,8 @@ if (WIN32)
     else ()
         message(FATAL_ERROR "Unknown MSVC architecture or non CXX language [${MSVC_CXX_ARCHITECTURE_ID}]")
     endif()
+
+    target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32)
 endif()
 
 add_executable(dnssd-advertiser test/dns-sd-advertiser.cpp)
