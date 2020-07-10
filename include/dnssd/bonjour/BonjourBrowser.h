@@ -8,6 +8,7 @@
 #include "Service.h"
 
 #include <thread>
+#include <atomic>
 
 namespace dnssd {
 
@@ -19,14 +20,14 @@ namespace dnssd {
 
         Error browseFor(const std::string& service) override;
 
-        [[nodiscard]] bool reportIfError(const Error& error) const noexcept;
+        bool reportIfError(const Error& error) const noexcept;
 
 
         void browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags inFlags, uint32_t interfaceIndex,
                          DNSServiceErrorType errorCode, const char* name, const char* type,
                          const char* domain);
 
-        [[nodiscard]] const SharedConnection& sharedConnection() const noexcept { return mSharedConnection; }
+        const SharedConnection& sharedConnection() const noexcept { return mSharedConnection; }
 
     private:
         SharedConnection mSharedConnection;
