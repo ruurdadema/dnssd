@@ -1,5 +1,5 @@
 # DNS Service Discovery for C++
-This library provides an interface which allows to work with dns-sd in an easy way.
+This library provides an interface which allows to use dns-sd in an easy way.
 
 _This is a work In Progress! Don't expect this library to be production ready._
 
@@ -38,11 +38,13 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
         std::cout << "Service removed: " << service.description() << std::endl;
     };
 
+    // Catch errors
     browser.onBrowserErrorAsync = [](dnssd::Error error)
     {
         std::cout << "Error: " << error.description() << std::endl;
     };
 
+    // Start browsing
     if (auto error = browser.browseFor("_http._tcp"))
     {
         std::cout << "Error: " << error.description() << std::endl;
@@ -54,6 +56,7 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
     dnssd::Advertiser advertiser;
 
+    // Catch errors
     advertiser.onAdvertiserErrorAsync = [](const dnssd::Error& error)
     {
         std::cout << "Error: " << error.description() << std::endl;
@@ -61,6 +64,7 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
     dnssd::TxtRecord txtRecord = {{"key1", "value1"}, {"key2", "value2"}};
 
+    // Register service
     if (auto error = advertiser.registerService("_http._tcp", 80, txtRecord))
     {
         std::cout << "Error: " << error.description() << std::endl;
