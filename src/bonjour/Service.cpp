@@ -12,7 +12,7 @@ void DNSSD_API resolveCallBack(DNSServiceRef sdRef, DNSServiceFlags flags, uint3
                                uint16_t txtLen, const unsigned char* txtRecord, void* context)
 {
     auto* service = static_cast<dnssd::Service*>(context);
-    service->resolveCallBack(sdRef, flags, interfaceIndex, errorCode, fullname, hosttarget, port, txtLen, txtRecord);
+    service->resolveCallBack(sdRef, flags, interfaceIndex, errorCode, fullname, hosttarget, ntohs(port), txtLen, txtRecord);
 }
 
 void DNSSD_API getAddrInfoCallBack(DNSServiceRef sdRef, DNSServiceFlags flags, uint32_t interfaceIndex,
