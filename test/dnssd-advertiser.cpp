@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
         std::cout << "Error: " << error.description() << std::endl;
     };
 
-    if (auto error = advertiser.registerService(args[0], portNumber, txtRecord))
+    if (auto error = advertiser.registerService(args[0], portNumber, txtRecord, "001122334455@SomeName"))
     {
         std::cout << "Error: " << error.description() << std::endl;
         return -1;

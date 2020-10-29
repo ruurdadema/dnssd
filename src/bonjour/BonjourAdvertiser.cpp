@@ -25,7 +25,7 @@ static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServi
     }
 }
 
-dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& serviceName, uint16_t port) noexcept
+dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& serviceName, uint16_t port, const char* name) noexcept
 {
     DNSServiceRef serviceRef = nullptr;
 
@@ -53,7 +53,8 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& servic
 
 dnssd::Error dnssd::BonjourAdvertiser::registerService(
     const std::string &serviceName, uint16_t port,
-    const TxtRecord& txtRecord) noexcept
+    const TxtRecord& txtRecord,
+    const char* name) noexcept
 {
     DNSServiceRef serviceRef = nullptr;
     auto record = BonjourTxtRecord(txtRecord);
@@ -62,7 +63,7 @@ dnssd::Error dnssd::BonjourAdvertiser::registerService(
         &serviceRef,
         0,
         0,
-        nullptr,
+        "001122334455@SomeName",
         serviceName.c_str(),
         nullptr,
         nullptr,

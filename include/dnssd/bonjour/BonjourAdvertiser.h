@@ -13,8 +13,8 @@ namespace dnssd {
     public:
         explicit BonjourAdvertiser() = default;
 
-        Error registerService(const std::string& serviceName, uint16_t port) noexcept override;
-        Error registerService(const std::string& serviceName, uint16_t port, const TxtRecord& txtRecord) noexcept override;
+        Error registerService(const std::string& serviceName, uint16_t port, const char* name) noexcept override;
+        Error registerService(const std::string& serviceName, uint16_t port, const TxtRecord& txtRecord, const char* name) noexcept override;
 
         void unregisterService() noexcept override;
 

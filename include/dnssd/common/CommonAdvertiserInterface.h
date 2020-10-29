@@ -14,8 +14,8 @@ namespace dnssd {
 
         std::function<void(const Error&)> onAdvertiserErrorAsync;
 
-        virtual Error registerService(const std::string& serviceName, uint16_t port) noexcept = 0;
-        virtual Error registerService(const std::string& serviceName, uint16_t port, const TxtRecord& txtRecord) noexcept = 0;
+        virtual Error registerService(const std::string& serviceName, uint16_t port, const char* name) noexcept = 0;
+        virtual Error registerService(const std::string& serviceName, uint16_t port, const TxtRecord& txtRecord, const char* name) noexcept = 0;
         virtual void unregisterService() noexcept = 0;
     };
 
