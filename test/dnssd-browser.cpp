@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
         std::cout << "Address removed (" << address << "): " << service.description() << std::endl;
     };
 
-    browser.onBrowserErrorAsync = [](dnssd::Error error)
+    browser.onBrowserErrorAsync = [](const dnssd::Error& error)
     {
         std::cout << "Error: " << error.description() << std::endl;
     };
