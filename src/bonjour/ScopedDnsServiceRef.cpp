@@ -18,7 +18,7 @@ dnssd::ScopedDnsServiceRef::ScopedDnsServiceRef(const DNSServiceRef& serviceRef)
 {
 }
 
-dnssd::ScopedDnsServiceRef& dnssd::ScopedDnsServiceRef::operator=(dnssd::ScopedDnsServiceRef&& other)
+dnssd::ScopedDnsServiceRef& dnssd::ScopedDnsServiceRef::operator=(dnssd::ScopedDnsServiceRef&& other) noexcept
 {
     if (mServiceRef != nullptr)
     {

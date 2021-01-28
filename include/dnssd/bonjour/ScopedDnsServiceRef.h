@@ -14,7 +14,7 @@ namespace dnssd {
         explicit ScopedDnsServiceRef(const DNSServiceRef& serviceRef) noexcept;
 
         ScopedDnsServiceRef& operator=(const ScopedDnsServiceRef& other) = delete;
-        ScopedDnsServiceRef& operator=(ScopedDnsServiceRef&& other);
+        ScopedDnsServiceRef& operator=(ScopedDnsServiceRef&& other) noexcept ;
         ScopedDnsServiceRef& operator=(DNSServiceRef serviceRef);
 
         DNSServiceRef serviceRef() const noexcept { return  mServiceRef; }
