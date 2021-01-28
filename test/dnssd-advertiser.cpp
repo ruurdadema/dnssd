@@ -4,6 +4,21 @@
 #include <iostream>
 #include <vector>
 
+bool parseTxtRecord(dnssd::TxtRecord& txtRecord, const std::string& stringValue)
+{
+    if (stringValue.empty())
+        return false;
+
+    size_t pos = stringValue.find('=');
+
+    if (pos != std::string::npos)
+        txtRecord[stringValue.substr(0, pos)] = stringValue.substr(pos+1);
+    else
+        txtRecord[stringValue.substr(0, pos)] = "";
+
+    return true;
+}
+
 int main(int argc, char* argv[])
 {
     std::vector<std::string> args;
@@ -32,15 +47,7 @@ int main(int argc, char* argv[])
     dnssd::TxtRecord txtRecord;
     for (auto it = args.begin() + 2; it != args.end(); ++it)
     {
-        size_t pos = it->find("=");
-        if (pos != std::string::npos)
-        {
-            txtRecord.insert({it->substr(0, pos), it->substr(pos+1)});
-        }
-        else
-        {
-            txtRecord.insert({*it, ""});
-        }
+        parseTxtRecord(txtRecord, *it);
     }
 
     dnssd::Advertiser advertiser;
@@ -58,7 +65,25 @@ int main(int argc, char* argv[])
     std::cout << "Press enter to continue..." << std::endl;
 
     std::string cmd;
-    std::getline(std::cin, cmd);
+    while (true)
+    {
+        std::getline(std::cin, cmd);
+        if (cmd == "q" || cmd == "Q")
+        {
+            break;
+        }
+
+        if (parseTxtRecord(txtRecord, cmd))
+        {
+            std::cout << "Updated txt record: " << std::endl;
+            for (auto& pair : txtRecord)
+            {
+                std::cout << pair.first << "=" << pair.second << std::endl;
+            }
+
+            advertiser.updateTxtRecord(txtRecord);
+        }
+    }
 
     std::cout << "Exit" << std::endl;
 }

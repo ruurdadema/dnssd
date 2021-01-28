@@ -85,3 +85,10 @@ void dnssd::BonjourAdvertiser::unregisterService() noexcept
 {
     mServiceRef = nullptr;
 }
+
+dnssd::Error dnssd::BonjourAdvertiser::updateTxtRecord(const dnssd::TxtRecord& txtRecord) {
+    auto record = BonjourTxtRecord(txtRecord);
+
+    // Second argument's nullptr tells us that we are updating the primary record.
+    return Error(DNSServiceUpdateRecord(mServiceRef.serviceRef(), nullptr, 0, record.length(), record.bytesPtr(), 0));
+}
