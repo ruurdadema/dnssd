@@ -80,14 +80,17 @@ bool dnssd::BonjourBrowser::reportIfError(const dnssd::Error& error) const noexc
 
 dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
 {
+    // Initialize with the shared connection to pass it to DNSServiceBrowse
+    DNSServiceRef browsingServiceRef = mSharedConnection.serviceRef();
+
+    if (browsingServiceRef == nullptr)
+        return Error(kDNSServiceErr_ServiceNotRunning);
+
     if (mBrowsers.find(service) != mBrowsers.end())
     {
         // Already browsing for this service
         return Error("already browsing for service \"" + service + "\"");
     }
-
-    // Initialize with the shared connection to pass it to DNSServiceBrowse
-    DNSServiceRef browsingServiceRef = mSharedConnection.serviceRef();
 
     if (auto error = dnssd::Error(DNSServiceBrowse(
         &browsingServiceRef,
