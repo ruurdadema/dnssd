@@ -6,9 +6,7 @@ dnssd::SharedConnection::SharedConnection()
 {
     DNSServiceRef ref = nullptr;
     if (auto error = dnssd::Error(DNSServiceCreateConnection(&ref)))
-    {
         DNSSD_LOG_DEBUG(error.description())
-        throw Exception(error);
-    }
-    mServiceRef = ref; // From here on the ref is under RAII inside a ScopedDnsServiceRef class
+    else
+        mServiceRef = ref; // From here on the ref is under RAII inside a ScopedDnsServiceRef class
 }
