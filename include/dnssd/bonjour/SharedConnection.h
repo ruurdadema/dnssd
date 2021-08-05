@@ -2,16 +2,17 @@
 
 #include "ScopedDnsServiceRef.h"
 
-namespace dnssd {
+namespace dnssd
+{
 
-    class SharedConnection
-    {
-    public:
-        SharedConnection();
-        DNSServiceRef serviceRef() const noexcept { return mServiceRef.serviceRef(); }
+class SharedConnection
+{
+public:
+    SharedConnection();
+    DNSServiceRef serviceRef() const noexcept { return mServiceRef.serviceRef(); }
 
-    private:
-        ScopedDnsServiceRef mServiceRef;
-    };
+private:
+    ScopedDnsServiceRef mServiceRef;
+};
 
 } // namespace dnssd

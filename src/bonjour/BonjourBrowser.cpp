@@ -1,110 +1,131 @@
 #include <dnssd/bonjour/BonjourBrowser.h>
 #include <dnssd/bonjour/Service.h>
 
-void DNSSD_API browseReply2(DNSServiceRef browseServiceRef, DNSServiceFlags flags, uint32_t interfaceIndex,
-                            DNSServiceErrorType errorCode, const char* name, const char* type,
-                            const char* domain, void* context)
+void DNSSD_API browseReply2 (
+    DNSServiceRef browseServiceRef,
+    DNSServiceFlags flags,
+    uint32_t interfaceIndex,
+    DNSServiceErrorType errorCode,
+    const char* name,
+    const char* type,
+    const char* domain,
+    void* context)
 {
-    auto* browser = static_cast<dnssd::BonjourBrowser*>(context);
-    browser->browseReply(browseServiceRef, flags, interfaceIndex, errorCode, name, type, domain);
+    auto* browser = static_cast<dnssd::BonjourBrowser*> (context);
+    browser->browseReply (browseServiceRef, flags, interfaceIndex, errorCode, name, type, domain);
 }
 
-dnssd::BonjourBrowser::BonjourBrowser() : mThread(std::thread(&BonjourBrowser::thread, this))
+dnssd::BonjourBrowser::BonjourBrowser() : mThread (std::thread (&BonjourBrowser::thread, this)) {}
+
+void dnssd::BonjourBrowser::browseReply (
+    DNSServiceRef browseServiceRef,
+    DNSServiceFlags inFlags,
+    uint32_t interfaceIndex,
+    DNSServiceErrorType errorCode,
+    const char* name,
+    const char* type,
+    const char* domain)
 {
-}
+    DNSSD_LOG_DEBUG ("> browseReply enter (context=" << this << ")" << std::endl)
 
-void dnssd::BonjourBrowser::browseReply(DNSServiceRef browseServiceRef, DNSServiceFlags inFlags, uint32_t interfaceIndex,
-                                        DNSServiceErrorType errorCode, const char* name, const char* type, const char* domain)
-{
-    DNSSD_LOG_DEBUG("> browseReply enter (context=" << this << ")" << std::endl)
+    if (reportIfError (Error (errorCode)))
+    {
+        return;
+    }
 
-    if (reportIfError(Error(errorCode))) { return; }
-
-    DNSSD_LOG_DEBUG(
+    DNSSD_LOG_DEBUG (
         "> browseReply"
-            << " name=" << name
-            << " type=" << type
-            << " domain=" << domain
-            << " browseServiceRef=" << browseServiceRef
-            << " interfaceIndex=" << interfaceIndex
-            << std::endl)
+        << " name=" << name << " type=" << type << " domain=" << domain << " browseServiceRef=" << browseServiceRef
+        << " interfaceIndex=" << interfaceIndex << std::endl)
 
     char fullname[kDNSServiceMaxDomainName] = {};
-    if (reportIfError(Error(DNSServiceConstructFullName(fullname, name, type, domain)))) { return; }
+    if (reportIfError (Error (DNSServiceConstructFullName (fullname, name, type, domain))))
+    {
+        return;
+    }
 
     if (inFlags & kDNSServiceFlagsAdd)
     {
         // Insert a new service if not already present
-        auto service = mServices.find(fullname);
+        auto service = mServices.find (fullname);
         if (service == mServices.end())
         {
-            service = mServices.insert({fullname, Service(fullname, name, type, domain, *this)}).first;
-            if (onServiceDiscoveredAsync) { onServiceDiscoveredAsync(service->second.description()); }
+            service = mServices.insert ({ fullname, Service (fullname, name, type, domain, *this) }).first;
+            if (onServiceDiscoveredAsync)
+            {
+                onServiceDiscoveredAsync (service->second.description());
+            }
         }
 
-        service->second.resolveOnInterface(interfaceIndex);
+        service->second.resolveOnInterface (interfaceIndex);
     }
     else
     {
-        auto foundService = mServices.find(fullname);
+        auto foundService = mServices.find (fullname);
         if (foundService == mServices.end())
         {
-            if (reportIfError(Error(std::string("service with fullname \"") + fullname + "\" not found")))
+            if (reportIfError (Error (std::string ("service with fullname \"") + fullname + "\" not found")))
             {
                 return;
             }
         }
 
-        if (foundService->second.removeInterface(interfaceIndex) == 0)
+        if (foundService->second.removeInterface (interfaceIndex) == 0)
         {
             // We just removed the last interface
-            if (onServiceRemovedAsync) { onServiceRemovedAsync(foundService->second.description()); }
+            if (onServiceRemovedAsync)
+            {
+                onServiceRemovedAsync (foundService->second.description());
+            }
 
             // Remove the BrowseResult (as there are not interfaces left)
-            mServices.erase(foundService);
+            mServices.erase (foundService);
         }
     }
 
-    DNSSD_LOG_DEBUG("< browseReply exit (" << std::this_thread::get_id() << ")" << std::endl)
+    DNSSD_LOG_DEBUG ("< browseReply exit (" << std::this_thread::get_id() << ")" << std::endl)
 }
 
-bool dnssd::BonjourBrowser::reportIfError(const dnssd::Error& error) const noexcept
+bool dnssd::BonjourBrowser::reportIfError (const dnssd::Error& error) const noexcept
 {
     if (error)
     {
-        if (onBrowserErrorAsync) { onBrowserErrorAsync(error); }
+        if (onBrowserErrorAsync)
+        {
+            onBrowserErrorAsync (error);
+        }
         return true;
     }
     return false;
 }
 
-dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
+dnssd::Error dnssd::BonjourBrowser::browseFor (const std::string& service)
 {
     // Initialize with the shared connection to pass it to DNSServiceBrowse
     DNSServiceRef browsingServiceRef = mSharedConnection.serviceRef();
 
     if (browsingServiceRef == nullptr)
-        return Error(kDNSServiceErr_ServiceNotRunning);
+        return Error (kDNSServiceErr_ServiceNotRunning);
 
-    if (mBrowsers.find(service) != mBrowsers.end())
+    if (mBrowsers.find (service) != mBrowsers.end())
     {
         // Already browsing for this service
-        return Error("already browsing for service \"" + service + "\"");
+        return Error ("already browsing for service \"" + service + "\"");
     }
 
-    if (auto error = dnssd::Error(DNSServiceBrowse(
-        &browsingServiceRef,
-        kDNSServiceFlagsShareConnection,
-        kDNSServiceInterfaceIndexAny,
-        service.c_str(),
-        nullptr,
-        ::browseReply2,
-        this)))
+    if (auto error = dnssd::Error (DNSServiceBrowse (
+            &browsingServiceRef,
+            kDNSServiceFlagsShareConnection,
+            kDNSServiceInterfaceIndexAny,
+            service.c_str(),
+            nullptr,
+            ::browseReply2,
+            this)))
     {
         return error;
     }
 
-    mBrowsers.insert({service, ScopedDnsServiceRef(browsingServiceRef)});
+    mBrowsers.insert ({ service, ScopedDnsServiceRef (browsingServiceRef) });
     // From here the serviceRef is under RAII inside the ScopedDnsServiceRef class
 
     return dnssd::Error();
@@ -112,22 +133,22 @@ dnssd::Error dnssd::BonjourBrowser::browseFor(const std::string& service)
 
 void dnssd::BonjourBrowser::thread()
 {
-    DNSSD_LOG_DEBUG("> Start browse thread" << std::endl)
+    DNSSD_LOG_DEBUG ("> Start browse thread" << std::endl)
 
     struct timeval tv = {};
-    tv.tv_sec  = 0;
+    tv.tv_sec = 0;
     tv.tv_usec = 500000;
 
     int fd = -1;
     int nfds = -1;
 
-    fd = DNSServiceRefSockFD(mSharedConnection.serviceRef());
+    fd = DNSServiceRefSockFD (mSharedConnection.serviceRef());
 
     if (fd < 0)
     {
-        if (reportIfError(Error("Invalid file descriptor")))
+        if (reportIfError (Error ("Invalid file descriptor")))
         {
-            DNSSD_LOG_DEBUG("< Invalid file descriptor" << std::endl)
+            DNSSD_LOG_DEBUG ("< Invalid file descriptor" << std::endl)
             return;
         }
     }
@@ -135,17 +156,17 @@ void dnssd::BonjourBrowser::thread()
     while (mKeepGoing.load())
     {
         fd_set readfds;
-        FD_ZERO(&readfds);
-        FD_SET(fd, &readfds);
+        FD_ZERO (&readfds);
+        FD_SET (fd, &readfds);
         nfds = fd + 1;
 
-        int result = select(nfds, &readfds, (fd_set*)nullptr, (fd_set*)nullptr, &tv);
+        int result = select (nfds, &readfds, (fd_set*)nullptr, (fd_set*)nullptr, &tv);
 
         if (result < 0) // Error
         {
-            if (reportIfError(Error("Select error: " + std::to_string(result))))
+            if (reportIfError (Error ("Select error: " + std::to_string (result))))
             {
-                DNSSD_LOG_DEBUG("! Error (code=" << result << ")" << std::endl)
+                DNSSD_LOG_DEBUG ("! Error (code=" << result << ")" << std::endl)
                 break;
             }
         }
@@ -154,22 +175,25 @@ void dnssd::BonjourBrowser::thread()
         }
         else
         {
-            if (FD_ISSET(fd, &readfds))
+            if (FD_ISSET (fd, &readfds))
             {
-                DNSSD_LOG_DEBUG("> Main loop (FD_ISSET == true)" << std::endl)
-                (void) reportIfError(Error(DNSServiceProcessResult(mSharedConnection.serviceRef())));
+                DNSSD_LOG_DEBUG ("> Main loop (FD_ISSET == true)" << std::endl)
+                (void)reportIfError (Error (DNSServiceProcessResult (mSharedConnection.serviceRef())));
             }
             else
             {
-                DNSSD_LOG_DEBUG("> Main loop (FD_ISSET == false)" << std::endl)
+                DNSSD_LOG_DEBUG ("> Main loop (FD_ISSET == false)" << std::endl)
             }
         }
     }
 
-    DNSSD_LOG_DEBUG("< Stop browse thread" << std::endl)
+    DNSSD_LOG_DEBUG ("< Stop browse thread" << std::endl)
 }
 dnssd::BonjourBrowser::~BonjourBrowser()
 {
     mKeepGoing = false;
-    if (mThread.joinable()) { mThread.join(); }
+    if (mThread.joinable())
+    {
+        mThread.join();
+    }
 }

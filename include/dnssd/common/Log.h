@@ -9,12 +9,19 @@
 
 #ifndef DNSSD_LOG_DEBUG
 
-void dnssd_debug_log(const std::string& str);
-#define DNSSD_LOG_DEBUG(msg) { std::ostringstream tmp; tmp << msg; dnssd_debug_log(tmp.str()); }
+void dnssd_debug_log (const std::string& str);
+#define DNSSD_LOG_DEBUG(msg)                                                                                           \
+    {                                                                                                                  \
+        std::ostringstream tmp;                                                                                        \
+        tmp << msg;                                                                                                    \
+        dnssd_debug_log (tmp.str());                                                                                   \
+    }
 
 #endif
 #else
 
-#define DNSSD_LOG_DEBUG(msg) {}
+#define DNSSD_LOG_DEBUG(msg)                                                                                           \
+    {                                                                                                                  \
+    }
 
 #endif

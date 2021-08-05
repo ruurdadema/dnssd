@@ -2,8 +2,9 @@
 
 #include "dnssd/bonjour/BonjourBrowser.h"
 
-namespace dnssd {
+namespace dnssd
+{
 
-    using Browser = BonjourBrowser;
+using Browser = BonjourBrowser;
 
 } // namespace dnssd

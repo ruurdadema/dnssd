@@ -1,10 +1,11 @@
 #pragma once
 
-#include <string>
 #include <map>
+#include <string>
 
-namespace dnssd {
+namespace dnssd
+{
 
-    using TxtRecord = std::map<std::string, std::string>;
+using TxtRecord = std::map<std::string, std::string>;
 
 } // namespace dnssd

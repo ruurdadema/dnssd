@@ -20,7 +20,7 @@ std::string ServiceDescription::description() const noexcept
     for (auto& interface : interfaces)
     {
         addressesDescription += "interface ";
-        addressesDescription += std::to_string(interface.first);
+        addressesDescription += std::to_string (interface.first);
         addressesDescription += ": ";
 
         for (auto& addr : interface.second)
@@ -32,15 +32,9 @@ std::string ServiceDescription::description() const noexcept
 
     std::stringstream output;
 
-    output
-    << "fullname: " << fullname
-    << ", name: " << name
-    << ", type: " << type
-    << ", domain: " << domain
-    << ", hostTarget: " << hostTarget
-    << ", port: " << port
-    << ", txtRecord: " << txtRecordDescription
-    << "addresses: " << addressesDescription;
+    output << "fullname: " << fullname << ", name: " << name << ", type: " << type << ", domain: " << domain
+           << ", hostTarget: " << hostTarget << ", port: " << port << ", txtRecord: " << txtRecordDescription
+           << "addresses: " << addressesDescription;
 
     return output.str();
 }

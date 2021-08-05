@@ -4,81 +4,93 @@
 #include <iostream>
 #include <thread>
 
-static void DNSSD_API registerServiceCallBack(DNSServiceRef serviceRef, DNSServiceFlags flags,
-                                              DNSServiceErrorType errorCode, const char* serviceName,
-                                              const char* regType, const char* replyDomain, void* context)
+static void DNSSD_API registerServiceCallBack (
+    DNSServiceRef serviceRef,
+    DNSServiceFlags flags,
+    DNSServiceErrorType errorCode,
+    const char* serviceName,
+    const char* regType,
+    const char* replyDomain,
+    void* context)
 {
-    (void) serviceRef;
-    (void) flags;
-    (void) serviceName;
-    (void) regType;
-    (void) replyDomain;
+    (void)serviceRef;
+    (void)flags;
+    (void)serviceName;
+    (void)regType;
+    (void)replyDomain;
 
-    dnssd::Error error(errorCode);
+    dnssd::Error error (errorCode);
 
     if (error)
     {
-        auto* owner = static_cast<dnssd::BonjourAdvertiser*>(context);
-        if (owner->onAdvertiserErrorAsync) { owner->onAdvertiserErrorAsync(error); }
+        auto* owner = static_cast<dnssd::BonjourAdvertiser*> (context);
+        if (owner->onAdvertiserErrorAsync)
+        {
+            owner->onAdvertiserErrorAsync (error);
+        }
         owner->unregisterService();
         return;
     }
 }
 
-dnssd::Error dnssd::BonjourAdvertiser::registerService(const std::string& serviceName, uint16_t port, const char* name) noexcept
+dnssd::Error dnssd::BonjourAdvertiser::registerService (
+    const std::string& serviceName,
+    uint16_t port,
+    const char* name) noexcept
 {
     DNSServiceRef serviceRef = nullptr;
 
-    if (auto error = Error(DNSServiceRegister(
-        &serviceRef,
-        0,
-        0,
-        name,
-        serviceName.c_str(),
-        nullptr,
-        nullptr,
-        htons(port),
-        0,
-        nullptr,
-        registerServiceCallBack,
-        this)))
+    if (auto error = Error (DNSServiceRegister (
+            &serviceRef,
+            0,
+            0,
+            name,
+            serviceName.c_str(),
+            nullptr,
+            nullptr,
+            htons (port),
+            0,
+            nullptr,
+            registerServiceCallBack,
+            this)))
     {
         return error;
     };
 
     mServiceRef = serviceRef;
 
-    return Error(DNSServiceProcessResult(mServiceRef.serviceRef()));
+    return Error (DNSServiceProcessResult (mServiceRef.serviceRef()));
 }
 
-dnssd::Error dnssd::BonjourAdvertiser::registerService(
-    const std::string &serviceName, uint16_t port,
+dnssd::Error dnssd::BonjourAdvertiser::registerService (
+    const std::string& serviceName,
+    uint16_t port,
     const TxtRecord& txtRecord,
     const char* name) noexcept
 {
     DNSServiceRef serviceRef = nullptr;
-    auto record = BonjourTxtRecord(txtRecord);
+    auto record = BonjourTxtRecord (txtRecord);
 
-    if (auto error = Error(DNSServiceRegister(
-        &serviceRef,
-        0,
-        0,
-        name,
-        serviceName.c_str(),
-        nullptr,
-        nullptr,
-        htons(port),
-        record.length(),
-        record.bytesPtr(),
-        registerServiceCallBack,
-        this)))
+    if (auto error = Error (DNSServiceRegister (
+            &serviceRef,
+            0,
+            0,
+            name,
+            serviceName.c_str(),
+            nullptr,
+            nullptr,
+            htons (port),
+            record.length(),
+            record.bytesPtr(),
+            registerServiceCallBack,
+            this)))
     {
         return error;
     }
 
     mServiceRef = serviceRef;
 
-    return Error(DNSServiceProcessResult(mServiceRef.serviceRef()));
+    return Error (DNSServiceProcessResult (mServiceRef.serviceRef()));
 }
 
 void dnssd::BonjourAdvertiser::unregisterService() noexcept
@@ -86,9 +98,10 @@ void dnssd::BonjourAdvertiser::unregisterService() noexcept
     mServiceRef = nullptr;
 }
 
-dnssd::Error dnssd::BonjourAdvertiser::updateTxtRecord(const dnssd::TxtRecord& txtRecord) {
-    auto record = BonjourTxtRecord(txtRecord);
+dnssd::Error dnssd::BonjourAdvertiser::updateTxtRecord (const dnssd::TxtRecord& txtRecord)
+{
+    auto record = BonjourTxtRecord (txtRecord);
 
     // Second argument's nullptr tells us that we are updating the primary record.
-    return Error(DNSServiceUpdateRecord(mServiceRef.serviceRef(), nullptr, 0, record.length(), record.bytesPtr(), 0));
+    return Error (DNSServiceUpdateRecord (mServiceRef.serviceRef(), nullptr, 0, record.length(), record.bytesPtr(), 0));
 }

@@ -2,8 +2,9 @@
 
 #include "dnssd/bonjour/BonjourAdvertiser.h"
 
-namespace dnssd {
+namespace dnssd
+{
 
-    using Advertiser = BonjourAdvertiser;
+using Advertiser = BonjourAdvertiser;
 
 } // namespace dnssd
