@@ -51,7 +51,7 @@ dnssd::Service::Service (
     const char* name,
     const char* type,
     const char* domain,
-    const BonjourBrowser& owner) :
+    BonjourBrowser& owner) :
     mOwner (owner)
 {
     mDescription.fullname = fullname;
@@ -113,10 +113,7 @@ void dnssd::Service::resolveCallBack (
 
     DNSSD_LOG_DEBUG ("- resolveCallBack: " << mDescription.description() << std::endl)
 
-    if (mOwner.onServiceResolvedAsync)
-    {
-        mOwner.onServiceResolvedAsync (mDescription, interfaceIndex);
-    }
+    mOwner.onServiceResolvedAsync (mDescription, interfaceIndex);
 
     DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection().serviceRef();
 
@@ -184,10 +181,8 @@ void dnssd::Service::getAddrInfoCallBack (
     if (foundInterface != mDescription.interfaces.end())
     {
         auto result = foundInterface->second.insert (ip_addr);
-        if (mOwner.onAddressAddedAsync)
-        {
-            mOwner.onAddressAddedAsync (mDescription, *result.first, interfaceIndex);
-        }
+
+        mOwner.onAddressAddedAsync (mDescription, *result.first, interfaceIndex);
     }
     else
     {
@@ -213,10 +208,7 @@ size_t dnssd::Service::removeInterface (uint32_t index)
     {
         for (auto& addr : foundInterface->second)
         {
-            if (mOwner.onAddressRemovedAsync)
-            {
-                mOwner.onAddressRemovedAsync (mDescription, addr, index);
-            }
+            mOwner.onAddressRemovedAsync (mDescription, addr, index);
         }
     }
 

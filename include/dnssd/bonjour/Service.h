@@ -11,7 +11,7 @@ class BonjourBrowser;
 class Service
 {
 public:
-    Service (const char* fullname, const char* name, const char* type, const char* domain, const BonjourBrowser& owner);
+    Service (const char* fullname, const char* name, const char* type, const char* domain, BonjourBrowser& owner);
 
     void resolveOnInterface (uint32_t index);
     size_t removeInterface (uint32_t index);
@@ -38,7 +38,7 @@ public:
         uint32_t ttl);
 
 private:
-    const BonjourBrowser& mOwner;
+    BonjourBrowser& mOwner;
     std::map<uint32_t, ScopedDnsServiceRef> mResolvers;
     std::map<uint32_t, ScopedDnsServiceRef> mGetAddrs;
     ServiceDescription mDescription;

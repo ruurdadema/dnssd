@@ -1,5 +1,6 @@
 #include <dnssd/bonjour/BonjourBrowser.h>
 #include <dnssd/bonjour/Service.h>
+#include <mutex>
 
 void DNSSD_API browseReply2 (
     DNSServiceRef browseServiceRef,
@@ -29,9 +30,7 @@ void dnssd::BonjourBrowser::browseReply (
     DNSSD_LOG_DEBUG ("> browseReply enter (context=" << this << ")" << std::endl)
 
     if (reportIfError (Error (errorCode)))
-    {
         return;
-    }
 
     DNSSD_LOG_DEBUG (
         "> browseReply"
@@ -40,9 +39,7 @@ void dnssd::BonjourBrowser::browseReply (
 
     char fullname[kDNSServiceMaxDomainName] = {};
     if (reportIfError (Error (DNSServiceConstructFullName (fullname, name, type, domain))))
-    {
         return;
-    }
 
     if (inFlags & kDNSServiceFlagsAdd)
     {
@@ -51,10 +48,7 @@ void dnssd::BonjourBrowser::browseReply (
         if (service == mServices.end())
         {
             service = mServices.insert ({ fullname, Service (fullname, name, type, domain, *this) }).first;
-            if (onServiceDiscoveredAsync)
-            {
-                onServiceDiscoveredAsync (service->second.description());
-            }
+            onServiceDiscoveredAsync (service->second.description());
         }
 
         service->second.resolveOnInterface (interfaceIndex);
@@ -63,20 +57,13 @@ void dnssd::BonjourBrowser::browseReply (
     {
         auto foundService = mServices.find (fullname);
         if (foundService == mServices.end())
-        {
             if (reportIfError (Error (std::string ("service with fullname \"") + fullname + "\" not found")))
-            {
                 return;
-            }
-        }
 
         if (foundService->second.removeInterface (interfaceIndex) == 0)
         {
             // We just removed the last interface
-            if (onServiceRemovedAsync)
-            {
-                onServiceRemovedAsync (foundService->second.description());
-            }
+            onServiceRemovedAsync (foundService->second.description());
 
             // Remove the BrowseResult (as there are not interfaces left)
             mServices.erase (foundService);
@@ -86,14 +73,11 @@ void dnssd::BonjourBrowser::browseReply (
     DNSSD_LOG_DEBUG ("< browseReply exit (" << std::this_thread::get_id() << ")" << std::endl)
 }
 
-bool dnssd::BonjourBrowser::reportIfError (const dnssd::Error& error) const noexcept
+bool dnssd::BonjourBrowser::reportIfError (const dnssd::Error& error) noexcept
 {
     if (error)
     {
-        if (onBrowserErrorAsync)
-        {
-            onBrowserErrorAsync (error);
-        }
+        onBrowserErrorAsync (error);
         return true;
     }
     return false;
@@ -101,6 +85,8 @@ bool dnssd::BonjourBrowser::reportIfError (const dnssd::Error& error) const noex
 
 dnssd::Error dnssd::BonjourBrowser::browseFor (const std::string& service)
 {
+    std::lock_guard<std::recursive_mutex> lg(mLock);
+
     // Initialize with the shared connection to pass it to DNSServiceBrowse
     DNSServiceRef browsingServiceRef = mSharedConnection.serviceRef();
 
@@ -162,38 +148,43 @@ void dnssd::BonjourBrowser::thread()
 
         int result = select (nfds, &readfds, (fd_set*)nullptr, (fd_set*)nullptr, &tv);
 
-        if (result < 0) // Error
         {
-            if (reportIfError (Error ("Select error: " + std::to_string (result))))
+            std::lock_guard<std::recursive_mutex> lg(mLock);
+
+            if (result < 0) // Error
             {
-                DNSSD_LOG_DEBUG ("! Error (code=" << result << ")" << std::endl)
-                break;
+                if (reportIfError (Error ("Select error: " + std::to_string (result))))
+                {
+                    DNSSD_LOG_DEBUG ("! Error (code=" << result << ")" << std::endl)
+                    break;
+                }
             }
-        }
-        else if (result == 0) // Timeout
-        {
-        }
-        else
-        {
-            if (FD_ISSET (fd, &readfds))
+            else if (result == 0) // Timeout
             {
-                DNSSD_LOG_DEBUG ("> Main loop (FD_ISSET == true)" << std::endl)
-                (void)reportIfError (Error (DNSServiceProcessResult (mSharedConnection.serviceRef())));
             }
             else
             {
-                DNSSD_LOG_DEBUG ("> Main loop (FD_ISSET == false)" << std::endl)
+                if (FD_ISSET (fd, &readfds))
+                {
+                    DNSSD_LOG_DEBUG ("> Main loop (FD_ISSET == true)" << std::endl)
+                    (void)reportIfError (Error (DNSServiceProcessResult (mSharedConnection.serviceRef())));
+                }
+                else
+                {
+                    DNSSD_LOG_DEBUG ("> Main loop (FD_ISSET == false)" << std::endl)
+                }
             }
         }
     }
 
     DNSSD_LOG_DEBUG ("< Stop browse thread" << std::endl)
 }
+
 dnssd::BonjourBrowser::~BonjourBrowser()
 {
+    std::lock_guard<std::recursive_mutex> lg(mLock);
+
     mKeepGoing = false;
     if (mThread.joinable())
-    {
         mThread.join();
-    }
 }

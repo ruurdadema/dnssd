@@ -14,8 +14,6 @@ public:
     explicit CommonAdvertiserInterface() = default;
     virtual ~CommonAdvertiserInterface() = default;
 
-    std::function<void (const Error&)> onAdvertiserErrorAsync;
-
     virtual Error registerService (const std::string& serviceName, uint16_t port, const char* name) noexcept = 0;
     virtual Error registerService (
         const std::string& serviceName,
@@ -24,6 +22,8 @@ public:
         const char* name) noexcept = 0;
     virtual Error updateTxtRecord (const TxtRecord& txtRecord) = 0;
     virtual void unregisterService() noexcept = 0;
+
+    virtual void onAdvertiserErrorAsync (const Error& error) {}
 };
 
 } // namespace dnssd

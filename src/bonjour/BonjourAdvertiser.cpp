@@ -24,10 +24,7 @@ static void DNSSD_API registerServiceCallBack (
     if (error)
     {
         auto* owner = static_cast<dnssd::BonjourAdvertiser*> (context);
-        if (owner->onAdvertiserErrorAsync)
-        {
-            owner->onAdvertiserErrorAsync (error);
-        }
+        owner->onAdvertiserErrorAsync (error);
         owner->unregisterService();
         return;
     }

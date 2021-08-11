@@ -4,6 +4,15 @@
 #include <string>
 #include <vector>
 
+class MyAdvertiser : public dnssd::Advertiser
+{
+public:
+    void onAdvertiserErrorAsync (const dnssd::Error& error) override
+    {
+        std::cout << "Error: " << error.description() << std::endl;
+    }
+};
+
 bool parseTxtRecord (dnssd::TxtRecord& txtRecord, const std::string& stringValue)
 {
     if (stringValue.empty())
@@ -55,10 +64,7 @@ int main (int argc, char* argv[])
         parseTxtRecord (txtRecord, *it);
     }
 
-    dnssd::Advertiser advertiser;
-    advertiser.onAdvertiserErrorAsync = [] (const dnssd::Error& error) {
-        std::cout << "Error: " << error.description() << std::endl;
-    };
+    MyAdvertiser advertiser;
 
     if (auto error = advertiser.registerService (args[0], portNumber, txtRecord, "001122334455@SomeName"))
     {

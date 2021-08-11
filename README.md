@@ -26,23 +26,26 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
     #include <dnssd/Browser.h>
 
-    dnssd::Browser browser;
+    class MyBrowser : public dnssd::Browser
+    {
+    public:
+        void onServiceDiscoveredAsync (const dnssd::ServiceDescription& serviceDescription) override
+        {
+            std::cout << "Service discovered: " << serviceDescription.description() << std::endl;
+        }
     
-    browser.onServiceDiscoveredAsync = [](const dnssd::ServiceDescription& service)
-    {
-        std::cout << "Service discovered: " << service.description() << std::endl;
+        void onServiceRemovedAsync (const dnssd::ServiceDescription& serviceDescription) override
+        {
+            std::cout << "Service removed: " << serviceDescription.description() << std::endl;
+        }
+    
+        void onBrowserErrorAsync (const dnssd::Error& error) override
+        {
+            std::cout << "Error: " << error.description() << std::endl;
+        }
     };
 
-    browser.onServiceRemovedAsync = [](const dnssd::ServiceDescription& service)
-    {
-        std::cout << "Service removed: " << service.description() << std::endl;
-    };
-
-    // Catch errors
-    browser.onBrowserErrorAsync = [](dnssd::Error error)
-    {
-        std::cout << "Error: " << error.description() << std::endl;
-    };
+    MyBrowser browser;
 
     // Start browsing
     if (auto error = browser.browseFor("_http._tcp"))
@@ -54,13 +57,16 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
     #include <dnssd/Advertiser.h>
 
-    dnssd::Advertiser advertiser;
-
-    // Catch errors
-    advertiser.onAdvertiserErrorAsync = [](const dnssd::Error& error)
+    class MyAdvertiser : public dnssd::Advertiser
     {
-        std::cout << "Error: " << error.description() << std::endl;
+    public:
+        void onAdvertiserErrorAsync (const dnssd::Error& error) override
+        {
+            std::cout << "Error: " << error.description() << std::endl;
+        }
     };
+
+    MyAdvertiser advertiser;
 
     dnssd::TxtRecord txtRecord = {{"key1", "value1"}, {"key2", "value2"}};
 

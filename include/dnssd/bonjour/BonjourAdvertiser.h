@@ -5,6 +5,7 @@
 #include "ScopedDnsServiceRef.h"
 
 #include <map>
+#include <mutex>
 
 namespace dnssd
 {

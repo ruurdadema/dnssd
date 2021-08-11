@@ -9,6 +9,7 @@
 
 #include <atomic>
 #include <thread>
+#include <mutex>
 
 namespace dnssd
 {
@@ -21,7 +22,7 @@ public:
 
     Error browseFor (const std::string& service) override;
 
-    bool reportIfError (const Error& error) const noexcept;
+    bool reportIfError (const Error& error) noexcept;
 
     void browseReply (
         DNSServiceRef browseServiceRef,
@@ -40,6 +41,7 @@ private:
     std::map<std::string, Service> mServices;
     std::atomic_bool mKeepGoing = ATOMIC_VAR_INIT (true);
     std::thread mThread;
+    std::recursive_mutex mLock;
 
     void thread();
 };
