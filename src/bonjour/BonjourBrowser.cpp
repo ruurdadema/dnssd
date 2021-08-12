@@ -182,8 +182,6 @@ void dnssd::BonjourBrowser::thread()
 
 dnssd::BonjourBrowser::~BonjourBrowser()
 {
-    std::lock_guard<std::recursive_mutex> lg(mLock);
-
     mKeepGoing = false;
     if (mThread.joinable())
         mThread.join();
