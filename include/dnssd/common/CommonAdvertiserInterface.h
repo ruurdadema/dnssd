@@ -2,6 +2,7 @@
 
 #include "../common/TxtRecord.h"
 #include "Error.h"
+#include "Util.h"
 
 #include <functional>
 
@@ -23,7 +24,7 @@ public:
     virtual Error updateTxtRecord (const TxtRecord& txtRecord) = 0;
     virtual void unregisterService() noexcept = 0;
 
-    virtual void onAdvertiserErrorAsync (const Error& error) {}
+    virtual void onAdvertiserErrorAsync (const Error& error) { ignore (error); }
 };
 
 } // namespace dnssd

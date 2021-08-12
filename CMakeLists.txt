@@ -15,6 +15,7 @@ add_library(dnssd-cpp STATIC
         include/dnssd/common/CommonAdvertiserInterface.h
         include/dnssd/common/CommonBrowserInterface.h
         include/dnssd/common/TxtRecord.h
+        include/dnssd/common/Util.h
         src/ServiceDescription.cpp
         src/bonjour/BonjourAdvertiser.cpp
         src/bonjour/BonjourBrowser.cpp
@@ -23,7 +24,7 @@ add_library(dnssd-cpp STATIC
         src/bonjour/Service.cpp
         src/bonjour/SharedConnection.cpp
         src/common/Error.cpp
-        src/common/Error.cpp/
+        src/common/Error.cpp
         src/common/Log.cpp
         )
 
