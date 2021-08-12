@@ -85,7 +85,7 @@ bool dnssd::BonjourBrowser::reportIfError (const dnssd::Error& error) noexcept
 
 dnssd::Error dnssd::BonjourBrowser::browseFor (const std::string& service)
 {
-    std::lock_guard<std::recursive_mutex> lg(mLock);
+    std::lock_guard<std::recursive_mutex> lg (mLock);
 
     // Initialize with the shared connection to pass it to DNSServiceBrowse
     DNSServiceRef browsingServiceRef = mSharedConnection.serviceRef();
@@ -149,8 +149,6 @@ void dnssd::BonjourBrowser::thread()
         int result = select (nfds, &readfds, (fd_set*)nullptr, (fd_set*)nullptr, &tv);
 
         {
-            std::lock_guard<std::recursive_mutex> lg(mLock);
-
             if (result < 0) // Error
             {
                 if (reportIfError (Error ("Select error: " + std::to_string (result))))
@@ -166,6 +164,10 @@ void dnssd::BonjourBrowser::thread()
             {
                 if (FD_ISSET (fd, &readfds))
                 {
+                    // Locking here will make sure that all callbacks are synchronised because they are called in
+                    // response to DNSServiceProcessResult.
+                    std::lock_guard<std::recursive_mutex> lg (mLock);
+
                     DNSSD_LOG_DEBUG ("> Main loop (FD_ISSET == true)" << std::endl)
                     (void)reportIfError (Error (DNSServiceProcessResult (mSharedConnection.serviceRef())));
                 }
