@@ -164,6 +164,9 @@ void dnssd::BonjourBrowser::thread()
             {
                 if (FD_ISSET (fd, &readfds))
                 {
+                    if (mKeepGoing.load() == false)
+                        return;
+
                     // Locking here will make sure that all callbacks are synchronised because they are called in
                     // response to DNSServiceProcessResult.
                     std::lock_guard<std::recursive_mutex> lg (mLock);
@@ -185,6 +188,8 @@ void dnssd::BonjourBrowser::thread()
 dnssd::BonjourBrowser::~BonjourBrowser()
 {
     mKeepGoing = false;
+
+    std::lock_guard<std::recursive_mutex> lg (mLock);
     if (mThread.joinable())
         mThread.join();
 }
