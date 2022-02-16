@@ -20,6 +20,8 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
 ## How to use
 
+[Documentation](https://dnssd.docsforge.com/)
+
 ### Browsing
 
     #include <dnssd/Browser.h>
