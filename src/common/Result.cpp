@@ -1,26 +1,26 @@
-#include <dnssd/common/Error.h>
+#include <dnssd/common/Result.h>
 #include <sstream>
 #include <utility>
 using namespace dnssd;
 
-Error::Error (DNSServiceErrorType error) noexcept
+Result::Result (DNSServiceErrorType error) noexcept
 {
     if (error != kDNSServiceErr_NoError)
     {
         std::stringstream errorMessage;
-        errorMessage << "DNSServiceError: (" << Error::DNSServiceErrorDescription (error) << ")";
+        errorMessage << "DNSServiceError: (" << Result::DNSServiceErrorDescription (error) << ")";
         mErrorMsg = errorMessage.str();
     }
 
     mError = error;
 }
 
-Error::Error (const std::string& errorMsg) noexcept
+Result::Result (const std::string& errorMsg) noexcept
 {
     mErrorMsg = errorMsg;
 }
 
-std::string Error::description() const noexcept
+std::string Result::description() const noexcept
 {
     if (mErrorMsg.empty())
     {
@@ -29,7 +29,7 @@ std::string Error::description() const noexcept
     return mErrorMsg;
 }
 
-const char* Error::DNSServiceErrorDescription (DNSServiceErrorType error) noexcept
+const char* Result::DNSServiceErrorDescription (DNSServiceErrorType error) noexcept
 {
     switch (error)
     {
@@ -105,11 +105,4 @@ const char* Error::DNSServiceErrorDescription (DNSServiceErrorType error) noexce
     default:
         return "Unknown error";
     }
-}
-
-Exception::Exception (const Error& error) : mErrorMsg (error.description()) {}
-
-const char* Exception::what() const noexcept
-{
-    return mErrorMsg.c_str();
 }

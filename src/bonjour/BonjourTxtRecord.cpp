@@ -5,13 +5,11 @@ using namespace dnssd;
 
 BonjourTxtRecord::BonjourTxtRecord (const TxtRecord& txtRecord)
 {
-    // This way (0 and nullptr) the dns-sd will arrange allocation of a buffer
+    // This way (0 and nullptr) the dns-sd will arrange allocation for a buffer.
     TXTRecordCreate (&mTxtRecordRef, 0, nullptr);
 
     for (auto& kv : txtRecord)
-    {
         setValue (kv.first, kv.second);
-    }
 }
 
 BonjourTxtRecord::~BonjourTxtRecord()
@@ -19,14 +17,14 @@ BonjourTxtRecord::~BonjourTxtRecord()
     TXTRecordDeallocate (&mTxtRecordRef);
 }
 
-Error BonjourTxtRecord::setValue (const std::string& key, const std::string& value) noexcept
+Result BonjourTxtRecord::setValue (const std::string& key, const std::string& value) noexcept
 {
-    return Error (TXTRecordSetValue (&mTxtRecordRef, key.c_str(), (uint8_t)value.length(), value.c_str()));
+    return Result (TXTRecordSetValue (&mTxtRecordRef, key.c_str(), (uint8_t)value.length(), value.c_str()));
 }
 
-Error BonjourTxtRecord::setValue (const std::string& key) noexcept
+Result BonjourTxtRecord::setValue (const std::string& key) noexcept
 {
-    return Error (TXTRecordSetValue (&mTxtRecordRef, key.c_str(), 0, nullptr));
+    return Result (TXTRecordSetValue (&mTxtRecordRef, key.c_str(), 0, nullptr));
 }
 
 uint16_t BonjourTxtRecord::length() const noexcept

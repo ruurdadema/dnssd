@@ -72,7 +72,7 @@ void dnssd::Service::resolveOnInterface (uint32_t index)
 
     DNSServiceRef resolveServiceRef = mOwner.sharedConnection().serviceRef();
 
-    if (mOwner.reportIfError (Error (DNSServiceResolve (
+    if (mOwner.reportIfError (Result (DNSServiceResolve (
             &resolveServiceRef,
             kDNSServiceFlagsShareConnection,
             index,
@@ -102,7 +102,7 @@ void dnssd::Service::resolveCallBack (
     DNSSD_LOG_DEBUG ("> resolveCallBack enter (" << std::this_thread::get_id() << ") context=" << this << std::endl)
     DNSSD_LOG_DEBUG ("- fullname=" << fullname << std::endl);
 
-    if (mOwner.reportIfError (Error (errorCode)))
+    if (mOwner.reportIfError (Result (errorCode)))
     {
         return;
     }
@@ -117,7 +117,7 @@ void dnssd::Service::resolveCallBack (
 
     DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection().serviceRef();
 
-    if (mOwner.reportIfError (Error (DNSServiceGetAddrInfo (
+    if (mOwner.reportIfError (Result (DNSServiceGetAddrInfo (
             &getAddrInfoServiceRef,
             kDNSServiceFlagsShareConnection | kDNSServiceFlagsTimeout,
             interfaceIndex,
@@ -152,7 +152,7 @@ void dnssd::Service::getAddrInfoCallBack (
         return;
     }
 
-    if (mOwner.reportIfError (Error (errorCode)))
+    if (mOwner.reportIfError (Result (errorCode)))
     {
         return;
     }
@@ -187,7 +187,7 @@ void dnssd::Service::getAddrInfoCallBack (
     else
     {
         (void)mOwner.reportIfError (
-            Error (std::string ("Interface with id \"") + std::to_string (interfaceIndex) + "\" not found"));
+            Result (std::string ("Interface with id \"") + std::to_string (interfaceIndex) + "\" not found"));
     }
 
     DNSSD_LOG_DEBUG ("- Address: " << ip_addr << std::endl)
@@ -200,7 +200,7 @@ size_t dnssd::Service::removeInterface (uint32_t index)
     if (foundInterface == mDescription.interfaces.end())
     {
         (void)mOwner.reportIfError (
-            Error (std::string ("interface with index \"") + std::to_string (index) + "\" not found"));
+            Result (std::string ("interface with index \"") + std::to_string (index) + "\" not found"));
         return mDescription.interfaces.empty();
     }
 

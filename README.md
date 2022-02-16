@@ -37,9 +37,9 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
             std::cout << "Service removed: " << serviceDescription.description() << std::endl;
         }
     
-        void onBrowserErrorAsync (const dnssd::Error& error) override
+        void onBrowserErrorAsync (const dnssd::Result& error) override
         {
-            std::cout << "Error: " << error.description() << std::endl;
+            std::cout << "Result: " << error.description() << std::endl;
         }
     };
 
@@ -48,7 +48,7 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
     // Start browsing
     if (auto error = browser.browseFor("_http._tcp"))
     {
-        std::cout << "Error: " << error.description() << std::endl;
+        std::cout << "Result: " << error.description() << std::endl;
     };
     
 ### Advertising
@@ -58,9 +58,9 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
     class MyAdvertiser : public dnssd::Advertiser
     {
     public:
-        void onAdvertiserErrorAsync (const dnssd::Error& error) override
+        void onAdvertiserErrorAsync (const dnssd::Result& error) override
         {
-            std::cout << "Error: " << error.description() << std::endl;
+            std::cout << "Result: " << error.description() << std::endl;
         }
     };
 
@@ -71,7 +71,7 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
     // Register service
     if (auto error = advertiser.registerService("_http._tcp", 80, txtRecord))
     {
-        std::cout << "Error: " << error.description() << std::endl;
+        std::cout << "Result: " << error.description() << std::endl;
     }
 
 ## How to build

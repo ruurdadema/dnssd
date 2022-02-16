@@ -7,7 +7,7 @@
 class MyAdvertiser : public dnssd::Advertiser
 {
 public:
-    void onAdvertiserErrorAsync (const dnssd::Error& error) override
+    void onAdvertiserErrorAsync (const dnssd::Result& error) override
     {
         std::cout << "Error: " << error.description() << std::endl;
     }
@@ -66,13 +66,13 @@ int main (int argc, char* argv[])
 
     MyAdvertiser advertiser;
 
-    if (auto error = advertiser.registerService (args[0], portNumber, txtRecord, "001122334455@SomeName"))
+    if (auto error = advertiser.registerService (args[0], portNumber, "001122334455@SomeName", {}))
     {
         std::cout << "Error: " << error.description() << std::endl;
         return -1;
     }
 
-    std::cout << "Press enter to continue..." << std::endl;
+    std::cout << "Enter key=value to update the TXT record, or q to exit..." << std::endl;
 
     std::string cmd;
     while (true)
