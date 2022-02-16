@@ -1,8 +1,6 @@
 # DNS Service Discovery for C++
 This library provides an interface which allows to use dns-sd in an easy way.
 
-_This is a work In Progress! Don't expect this library to be production ready._
-
 ## Prerequisites
 
 * C++11 (or higher)
