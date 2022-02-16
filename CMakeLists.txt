@@ -47,8 +47,8 @@ if (WIN32)
     target_link_libraries(dnssd-cpp PUBLIC ws2_32)
 endif()
 
-add_executable(dnssd-advertiser test/dnssd-advertiser.cpp)
+add_executable(dnssd-advertiser examples/dnssd-advertiser.cpp)
 target_link_libraries(dnssd-advertiser dnssd-cpp)
 
-add_executable(dnssd-browser test/dnssd-browser.cpp)
+add_executable(dnssd-browser examples/dnssd-browser.cpp)
 target_link_libraries(dnssd-browser dnssd-cpp)
