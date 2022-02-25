@@ -66,7 +66,7 @@ int main (int argc, char* argv[])
 
     MyAdvertiser advertiser;
 
-    if (auto error = advertiser.registerService (args[0], portNumber, "001122334455@SomeName", {}))
+    if (auto error = advertiser.registerService (args[0], "001122334455@SomeName", nullptr, portNumber, txtRecord))
     {
         std::cout << "Error: " << error.description() << std::endl;
         return -1;

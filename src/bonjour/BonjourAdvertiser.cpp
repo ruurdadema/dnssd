@@ -31,9 +31,10 @@ static void DNSSD_API registerServiceCallBack (
 }
 
 dnssd::Result dnssd::BonjourAdvertiser::registerService (
-    const std::string& serviceName,
-    uint16_t port,
+    const std::string& regType,
     const char* name,
+    const char* domain,
+    uint16_t port,
     const TxtRecord& txtRecord) noexcept
 {
     DNSServiceRef serviceRef = nullptr;
@@ -44,8 +45,8 @@ dnssd::Result dnssd::BonjourAdvertiser::registerService (
             0,
             0,
             name,
-            serviceName.c_str(),
-            nullptr,
+            regType.c_str(),
+            domain,
             nullptr,
             htons (port),
             record.length(),
@@ -71,5 +72,6 @@ dnssd::Result dnssd::BonjourAdvertiser::updateTxtRecord (const dnssd::TxtRecord&
     auto record = BonjourTxtRecord (txtRecord);
 
     // Second argument's nullptr tells us that we are updating the primary record.
-    return Result (DNSServiceUpdateRecord (mServiceRef.serviceRef(), nullptr, 0, record.length(), record.bytesPtr(), 0));
+    return Result (
+        DNSServiceUpdateRecord (mServiceRef.serviceRef(), nullptr, 0, record.length(), record.bytesPtr(), 0));
 }
