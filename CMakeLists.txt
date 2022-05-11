@@ -12,8 +12,8 @@ add_library(dnssd-cpp STATIC
         include/dnssd/bonjour/ScopedDnsServiceRef.h
         include/dnssd/bonjour/Service.h
         include/dnssd/bonjour/SharedConnection.h
-        include/dnssd/common/CommonAdvertiserInterface.h
-        include/dnssd/common/CommonBrowserInterface.h
+        include/dnssd/common/IAdvertiser.h
+        include/dnssd/common/IBrowser.h
         include/dnssd/common/TxtRecord.h
         include/dnssd/common/Util.h
         src/ServiceDescription.cpp
@@ -24,8 +24,8 @@ add_library(dnssd-cpp STATIC
         src/bonjour/ScopedDnsServiceRef.cpp
         src/bonjour/Service.cpp
         src/bonjour/SharedConnection.cpp
-        src/common/Error.cpp
-        src/common/Error.cpp
+        src/common/Result.cpp
+        src/common/Result.cpp
         src/common/Log.cpp
         )
 
@@ -48,8 +48,8 @@ if (WIN32)
     target_link_libraries(dnssd-cpp PUBLIC ws2_32)
 endif()
 
-add_executable(dnssd-advertiser test/dnssd-advertiser.cpp)
+add_executable(dnssd-advertiser examples/dnssd-advertiser.cpp)
 target_link_libraries(dnssd-advertiser dnssd-cpp)
 
-add_executable(dnssd-browser test/dnssd-browser.cpp)
+add_executable(dnssd-browser examples/dnssd-browser.cpp)
 target_link_libraries(dnssd-browser dnssd-cpp)

@@ -37,7 +37,7 @@ public:
         std::cout << "Address removed (" << address << "): " << serviceDescription.description() << std::endl;
     }
 
-    void onBrowserErrorAsync (const dnssd::Error& error) override
+    void onBrowserErrorAsync (const dnssd::Result& error) override
     {
         std::cout << "Error: " << error.description() << std::endl;
     }
