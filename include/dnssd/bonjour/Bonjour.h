@@ -9,3 +9,10 @@
 #endif
 
 #include <dns_sd.h>
+
+namespace dnssd
+{
+
+bool isBonjourServiceRunning();
+
+} // namespace dnssd

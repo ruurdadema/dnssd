@@ -17,6 +17,7 @@ add_library(dnssd-cpp STATIC
         include/dnssd/common/TxtRecord.h
         include/dnssd/common/Util.h
         src/ServiceDescription.cpp
+        src/bonjour/Bonjour.cpp
         src/bonjour/BonjourAdvertiser.cpp
         src/bonjour/BonjourBrowser.cpp
         src/bonjour/BonjourTxtRecord.cpp
