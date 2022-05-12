@@ -54,9 +54,10 @@ int main (int argc, char* argv[])
 
     MyBrowser browser;
 
-    if (auto error = browser.browseFor (argv[1]))
+    auto result = browser.browseFor (argv[1]);
+    if (result.hasError())
     {
-        std::cout << "Error: " << error.description() << std::endl;
+        std::cout << "Error: " << result.description() << std::endl;
         return -1;
     };
 

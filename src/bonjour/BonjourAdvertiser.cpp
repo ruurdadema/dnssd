@@ -19,12 +19,12 @@ static void DNSSD_API registerServiceCallBack (
     (void)regType;
     (void)replyDomain;
 
-    dnssd::Result error (errorCode);
+    dnssd::Result result (errorCode);
 
-    if (error)
+    if (result.hasError())
     {
         auto* owner = static_cast<dnssd::BonjourAdvertiser*> (context);
-        owner->onAdvertiserErrorAsync (error);
+        owner->onAdvertiserErrorAsync (result);
         owner->unregisterService();
         return;
     }
@@ -40,22 +40,22 @@ dnssd::Result dnssd::BonjourAdvertiser::registerService (
     DNSServiceRef serviceRef = nullptr;
     auto record = BonjourTxtRecord (txtRecord);
 
-    if (auto error = Result (DNSServiceRegister (
-            &serviceRef,
-            0,
-            0,
-            name,
-            regType.c_str(),
-            domain,
-            nullptr,
-            htons (port),
-            record.length(),
-            record.bytesPtr(),
-            registerServiceCallBack,
-            this)))
-    {
-        return error;
-    }
+    auto result = Result (DNSServiceRegister (
+        &serviceRef,
+        0,
+        0,
+        name,
+        regType.c_str(),
+        domain,
+        nullptr,
+        htons (port),
+        record.length(),
+        record.bytesPtr(),
+        registerServiceCallBack,
+        this));
+
+    if (result.hasError())
+        return result;
 
     mServiceRef = serviceRef;
 

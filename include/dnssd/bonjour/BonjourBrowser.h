@@ -25,7 +25,7 @@ public:
 
     // MARK: IBrowser implementations -
     Result browseFor (const std::string& service) override;
-    bool reportIfError (const Result& error) noexcept;
+    bool reportIfError (const Result& result) noexcept;
 
     /**
      * Called by dns_sd logic in response to a browse reply.

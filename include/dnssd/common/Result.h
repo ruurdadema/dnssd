@@ -30,10 +30,14 @@ public:
     explicit Result (const std::string& errorMsg) noexcept;
 
     /**
-     * @return Returns true if there is no DNSServiceErrorType and no error message currently stored (true means
-     * success).
+     * @return Returns true if this result holds an error.
      */
-    explicit operator bool() const { return mError != kDNSServiceErr_NoError || !mErrorMsg.empty(); }
+    bool hasError() const;
+
+    /**
+     * @return Returns true if this result doesn't hold an error.
+     */
+    bool isOk() const;
 
     /**
      * @return Returns a description of this Result, which will either return the error message or a description of the stored

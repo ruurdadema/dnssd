@@ -73,11 +73,11 @@ void dnssd::BonjourBrowser::browseReply (
     DNSSD_LOG_DEBUG ("< browseReply exit (" << std::this_thread::get_id() << ")" << std::endl)
 }
 
-bool dnssd::BonjourBrowser::reportIfError (const dnssd::Result& error) noexcept
+bool dnssd::BonjourBrowser::reportIfError (const dnssd::Result& result) noexcept
 {
-    if (error)
+    if (result.hasError())
     {
-        onBrowserErrorAsync (error);
+        onBrowserErrorAsync (result);
         return true;
     }
     return false;
@@ -99,22 +99,22 @@ dnssd::Result dnssd::BonjourBrowser::browseFor (const std::string& service)
         return Result ("already browsing for service \"" + service + "\"");
     }
 
-    if (auto error = dnssd::Result (DNSServiceBrowse (
-            &browsingServiceRef,
-            kDNSServiceFlagsShareConnection,
-            kDNSServiceInterfaceIndexAny,
-            service.c_str(),
-            nullptr,
-            ::browseReply2,
-            this)))
-    {
-        return error;
-    }
+    auto result = dnssd::Result (DNSServiceBrowse (
+        &browsingServiceRef,
+        kDNSServiceFlagsShareConnection,
+        kDNSServiceInterfaceIndexAny,
+        service.c_str(),
+        nullptr,
+        ::browseReply2,
+        this));
+
+    if (result.hasError())
+        return result;
 
     mBrowsers.insert ({ service, ScopedDnsServiceRef (browsingServiceRef) });
     // From here the serviceRef is under RAII inside the ScopedDnsServiceRef class
 
-    return dnssd::Result();
+    return {};
 }
 
 void dnssd::BonjourBrowser::thread()

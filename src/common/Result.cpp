@@ -106,3 +106,13 @@ const char* Result::DNSServiceErrorDescription (DNSServiceErrorType error) noexc
         return "Unknown error";
     }
 }
+
+bool Result::hasError() const
+{
+    return mError != kDNSServiceErr_NoError || !mErrorMsg.empty();
+}
+
+bool Result::isOk() const
+{
+    return !hasError();
+}
