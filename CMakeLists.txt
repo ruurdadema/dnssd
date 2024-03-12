@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 project(dnssd-cpp VERSION 0.0.1)
 
+option(DNSSD_NO_EXAMPLES "Disable examples" OFF)
+
 set(CMAKE_CXX_STANDARD 11)
 
 add_library(dnssd-cpp STATIC
@@ -27,12 +29,12 @@ add_library(dnssd-cpp STATIC
         src/common/Result.cpp
         src/common/Result.cpp
         src/common/Log.cpp
-        )
+)
 
 target_include_directories(dnssd-cpp PUBLIC include)
 
 if (WIN32)
-    set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcmt")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcmt")
 
     target_include_directories(dnssd-cpp PUBLIC "C:/Program Files/Bonjour SDK/Include")
 
@@ -43,13 +45,15 @@ if (WIN32)
         target_link_libraries(dnssd-cpp PUBLIC "C:/Program Files/Bonjour SDK/Lib/Win32/dnssd.lib")
     else ()
         message(FATAL_ERROR "Unknown MSVC architecture or non CXX language [${MSVC_CXX_ARCHITECTURE_ID}]")
-    endif()
+    endif ()
 
     target_link_libraries(dnssd-cpp PUBLIC ws2_32)
-endif()
+endif ()
 
-add_executable(dnssd-advertiser examples/dnssd-advertiser.cpp)
-target_link_libraries(dnssd-advertiser dnssd-cpp)
+if (NOT DNSSD_NO_EXAMPLES)
+    add_executable(dnssd-advertiser examples/dnssd-advertiser.cpp)
+    target_link_libraries(dnssd-advertiser dnssd-cpp)
 
-add_executable(dnssd-browser examples/dnssd-browser.cpp)
-target_link_libraries(dnssd-browser dnssd-cpp)
+    add_executable(dnssd-browser examples/dnssd-browser.cpp)
+    target_link_libraries(dnssd-browser dnssd-cpp)
+endif ()
