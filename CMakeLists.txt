@@ -14,10 +14,11 @@ add_library(dnssd-cpp STATIC
         include/dnssd/bonjour/ScopedDnsServiceRef.h
         include/dnssd/bonjour/Service.h
         include/dnssd/bonjour/SharedConnection.h
-        include/dnssd/common/IAdvertiser.h
-        include/dnssd/common/IBrowser.h
+        include/dnssd/common/AdvertiserBase.h
+        include/dnssd/common/BrowserBase.h
         include/dnssd/common/TxtRecord.h
         include/dnssd/common/Util.h
+
         src/ServiceDescription.cpp
         src/bonjour/Bonjour.cpp
         src/bonjour/BonjourAdvertiser.cpp
