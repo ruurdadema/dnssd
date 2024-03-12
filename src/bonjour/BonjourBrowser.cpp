@@ -48,14 +48,15 @@ void dnssd::BonjourBrowser::browseReply (
         if (service == mServices.end())
         {
             service = mServices.insert ({ fullname, Service (fullname, name, type, domain, *this) }).first;
-            onServiceDiscoveredAsync (service->second.description());
+            if (onServiceDiscoveredCallback)
+                onServiceDiscoveredCallback (service->second.description());
         }
 
         service->second.resolveOnInterface (interfaceIndex);
     }
     else
     {
-        auto foundService = mServices.find (fullname);
+        auto const foundService = mServices.find (fullname);
         if (foundService == mServices.end())
             if (reportIfError (Result (std::string ("service with fullname \"") + fullname + "\" not found")))
                 return;
@@ -63,7 +64,8 @@ void dnssd::BonjourBrowser::browseReply (
         if (foundService->second.removeInterface (interfaceIndex) == 0)
         {
             // We just removed the last interface
-            onServiceRemovedAsync (foundService->second.description());
+            if (onServiceRemovedCallback)
+                onServiceRemovedCallback (foundService->second.description());
 
             // Remove the BrowseResult (as there are not interfaces left)
             mServices.erase (foundService);
@@ -73,11 +75,12 @@ void dnssd::BonjourBrowser::browseReply (
     DNSSD_LOG_DEBUG ("< browseReply exit (" << std::this_thread::get_id() << ")" << std::endl)
 }
 
-bool dnssd::BonjourBrowser::reportIfError (const dnssd::Result& result) noexcept
+bool dnssd::BonjourBrowser::reportIfError (const dnssd::Result& result) const noexcept
 {
     if (result.hasError())
     {
-        onBrowserErrorAsync (result);
+        if (onBrowseErrorCallback)
+            onBrowseErrorCallback (result);
         return true;
     }
     return false;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../common/Result.h"
-#include "../common/IBrowser.h"
+#include "../common/BrowserBase.h"
 #include "../common/Log.h"
+#include "../common/Result.h"
 
 #include "Service.h"
 #include "SharedConnection.h"
@@ -17,7 +17,7 @@ namespace dnssd
 /**
  * Apple Bonjour implementation of IBrowser. Works on macOS and Windows.
  */
-class BonjourBrowser : public IBrowser
+class BonjourBrowser : public BrowserBase
 {
 public:
     explicit BonjourBrowser();
@@ -25,7 +25,7 @@ public:
 
     // MARK: IBrowser implementations -
     Result browseFor (const std::string& service) override;
-    bool reportIfError (const Result& result) noexcept;
+    bool reportIfError (const Result& result) const noexcept;
 
     /**
      * Called by dns_sd logic in response to a browse reply.

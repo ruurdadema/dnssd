@@ -22,29 +22,22 @@ This library uses the Bonjour SDK and expects it to be in the default install lo
 
     #include <dnssd/Browser.h>
 
-    class MyBrowser : public dnssd::Browser
-    {
-    public:
-        void onServiceDiscoveredAsync (const dnssd::ServiceDescription& serviceDescription) override
-        {
-            std::cout << "Service discovered: " << serviceDescription.description() << std::endl;
-        }
-    
-        void onServiceRemovedAsync (const dnssd::ServiceDescription& serviceDescription) override
-        {
-            std::cout << "Service removed: " << serviceDescription.description() << std::endl;
-        }
-    
-        void onBrowserErrorAsync (const dnssd::Result& error) override
-        {
-            std::cout << "Result: " << error.description() << std::endl;
-        }
-    };
+    dnssd::Browser browser;
 
-    MyBrowser browser;
+    browser.onServiceDiscoveredAsync ([] (const dnssd::ServiceDescription& serviceDescription) {
+        std::cout << "Service discovered: " << serviceDescription.description() << std::endl;
+    });
+
+    browser.onServiceRemovedAsync ([] (const dnssd::ServiceDescription& serviceDescription) {
+        std::cout << "Service removed: " << serviceDescription.description() << std::endl;
+    });
+
+    browser.onBrowseErrorAsync ([] (const dnssd::Result& error) {
+        std::cout << "Error: " << error.description() << std::endl;
+    });
 
     // Start browsing
-    if (auto error = browser.browseFor("_http._tcp"))
+    if (auto error = browser.browseFor ("_http._tcp"))
     {
         std::cout << "Result: " << error.description() << std::endl;
     };
@@ -62,7 +55,7 @@ This library uses the Bonjour SDK and expects it to be in the default install lo
     dnssd::TxtRecord txtRecord = {{"key1", "value1"}, {"key2", "value2"}};
 
     // Register service
-    if (auto error = advertiser.registerService("_http._tcp", 80, txtRecord))
+    if (auto error = advertiser.registerService ("_http._tcp", 80, txtRecord))
     {
         std::cout << "Result: " << error.description() << std::endl;
     }

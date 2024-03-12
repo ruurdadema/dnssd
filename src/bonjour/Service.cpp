@@ -113,7 +113,8 @@ void dnssd::Service::resolveCallBack (
 
     DNSSD_LOG_DEBUG ("- resolveCallBack: " << mDescription.description() << std::endl)
 
-    mOwner.onServiceResolvedAsync (mDescription, interfaceIndex);
+    if (mOwner.onServiceResolvedCallback)
+        mOwner.onServiceResolvedCallback (mDescription, interfaceIndex);
 
     DNSServiceRef getAddrInfoServiceRef = mOwner.sharedConnection().serviceRef();
 
@@ -182,7 +183,8 @@ void dnssd::Service::getAddrInfoCallBack (
     {
         auto result = foundInterface->second.insert (ip_addr);
 
-        mOwner.onAddressAddedAsync (mDescription, *result.first, interfaceIndex);
+        if (mOwner.onAddressAddedCallback)
+            mOwner.onAddressAddedCallback (mDescription, *result.first, interfaceIndex);
     }
     else
     {
@@ -208,7 +210,8 @@ size_t dnssd::Service::removeInterface (uint32_t index)
     {
         for (auto& addr : foundInterface->second)
         {
-            mOwner.onAddressRemovedAsync (mDescription, addr, index);
+            if (mOwner.onAddressRemovedCallback)
+                mOwner.onAddressRemovedCallback (mDescription, addr, index);
         }
     }
 

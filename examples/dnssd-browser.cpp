@@ -3,46 +3,6 @@
 #include <iostream>
 #include <string>
 
-class MyBrowser : public dnssd::Browser
-{
-public:
-    void onServiceDiscoveredAsync (const dnssd::ServiceDescription& serviceDescription) override
-    {
-        std::cout << "Service discovered: " << serviceDescription.description() << std::endl;
-    }
-
-    void onServiceRemovedAsync (const dnssd::ServiceDescription& serviceDescription) override
-    {
-        std::cout << "Service removed: " << serviceDescription.description() << std::endl;
-    }
-
-    void onServiceResolvedAsync (const dnssd::ServiceDescription& serviceDescription, uint32_t interfaceIndex) override
-    {
-        std::cout << "Service resolved: " << serviceDescription.description() << std::endl;
-    }
-
-    void onAddressAddedAsync (
-        const dnssd::ServiceDescription& serviceDescription,
-        const std::string& address,
-        uint32_t interfaceIndex) override
-    {
-        std::cout << "Address added (" << address << "): " << serviceDescription.description() << std::endl;
-    }
-
-    void onAddressRemovedAsync (
-        const dnssd::ServiceDescription& serviceDescription,
-        const std::string& address,
-        uint32_t interfaceIndex) override
-    {
-        std::cout << "Address removed (" << address << "): " << serviceDescription.description() << std::endl;
-    }
-
-    void onBrowserErrorAsync (const dnssd::Result& error) override
-    {
-        std::cout << "Error: " << error.description() << std::endl;
-    }
-};
-
 int main (int argc, char* argv[])
 {
     if (argc < 2)
@@ -52,9 +12,35 @@ int main (int argc, char* argv[])
         return -1;
     }
 
-    MyBrowser browser;
+    dnssd::Browser browser;
 
-    auto result = browser.browseFor (argv[1]);
+    browser.onServiceDiscovered ([] (const dnssd::ServiceDescription& serviceDescription) {
+        std::cout << "Service discovered: " << serviceDescription.description() << std::endl;
+    });
+
+    browser.onServiceRemoved ([] (const dnssd::ServiceDescription& serviceDescription) {
+        std::cout << "Service removed: " << serviceDescription.description() << std::endl;
+    });
+
+    browser.onServiceResolved ([] (const dnssd::ServiceDescription& serviceDescription, uint32_t interfaceIndex) {
+        std::cout << "Service resolved: " << serviceDescription.description() << std::endl;
+    });
+
+    browser.onAddressAdded (
+        [] (const dnssd::ServiceDescription& serviceDescription, const std::string& address, uint32_t interfaceIndex) {
+            std::cout << "Address added (" << address << "): " << serviceDescription.description() << std::endl;
+        });
+
+    browser.onAddressRemoved (
+        [] (const dnssd::ServiceDescription& serviceDescription, const std::string& address, uint32_t interfaceIndex) {
+            std::cout << "Address removed (" << address << "): " << serviceDescription.description() << std::endl;
+        });
+
+    browser.onBrowseError ([] (const dnssd::Result& error) {
+        std::cout << "Error: " << error.description() << std::endl;
+    });
+
+    auto const result = browser.browseFor (argv[1]);
     if (result.hasError())
     {
         std::cout << "Error: " << result.description() << std::endl;
