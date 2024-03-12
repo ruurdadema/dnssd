@@ -4,32 +4,6 @@
 #include <iostream>
 #include <thread>
 
-static void DNSSD_API registerServiceCallBack (
-    DNSServiceRef serviceRef,
-    DNSServiceFlags flags,
-    DNSServiceErrorType errorCode,
-    const char* serviceName,
-    const char* regType,
-    const char* replyDomain,
-    void* context)
-{
-    (void)serviceRef;
-    (void)flags;
-    (void)serviceName;
-    (void)regType;
-    (void)replyDomain;
-
-    dnssd::Result result (errorCode);
-
-    if (result.hasError())
-    {
-        auto* owner = static_cast<dnssd::BonjourAdvertiser*> (context);
-        owner->onAdvertiserErrorAsync (result);
-        owner->unregisterService();
-        return;
-    }
-}
-
 dnssd::Result dnssd::BonjourAdvertiser::registerService (
     const std::string& regType,
     const char* name,
@@ -67,9 +41,35 @@ void dnssd::BonjourAdvertiser::unregisterService() noexcept
     mServiceRef = nullptr;
 }
 
-dnssd::Result dnssd::BonjourAdvertiser::updateTxtRecord (const dnssd::TxtRecord& txtRecord)
+void dnssd::BonjourAdvertiser::registerServiceCallBack (
+    DNSServiceRef serviceRef,
+    DNSServiceFlags flags,
+    DNSServiceErrorType errorCode,
+    const char* serviceName,
+    const char* regType,
+    const char* replyDomain,
+    void* context)
 {
-    auto record = BonjourTxtRecord (txtRecord);
+    (void)serviceRef;
+    (void)flags;
+    (void)serviceName;
+    (void)regType;
+    (void)replyDomain;
+
+    Result const result (errorCode);
+
+    if (result.hasError())
+    {
+        auto* owner = static_cast<BonjourAdvertiser*> (context);
+        if (owner->onAdvertiserErrorCallback)
+            owner->onAdvertiserErrorCallback (result);
+        owner->unregisterService();
+    }
+}
+
+dnssd::Result dnssd::BonjourAdvertiser::updateTxtRecord (const TxtRecord& txtRecord)
+{
+    auto const record = BonjourTxtRecord (txtRecord);
 
     // Second argument's nullptr tells us that we are updating the primary record.
     return Result (

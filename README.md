@@ -53,16 +53,11 @@ This library uses the Bonjour SDK and expects it to be in the default install lo
 
     #include <dnssd/Advertiser.h>
 
-    class MyAdvertiser : public dnssd::Advertiser
+    dnssd::Advertiser advertiser;
+    advertiser.onAdvertiserErrorAsync ([] (const dnssd::Result& error) 
     {
-    public:
-        void onAdvertiserErrorAsync (const dnssd::Result& error) override
-        {
-            std::cout << "Result: " << error.description() << std::endl;
-        }
-    };
-
-    MyAdvertiser advertiser;
+        std::cout << "Error: " << error.description() << std::endl;
+    });
 
     dnssd::TxtRecord txtRecord = {{"key1", "value1"}, {"key2", "value2"}};
 

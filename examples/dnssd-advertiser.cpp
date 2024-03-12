@@ -4,15 +4,6 @@
 #include <string>
 #include <vector>
 
-class MyAdvertiser : public dnssd::Advertiser
-{
-public:
-    void onAdvertiserErrorAsync (const dnssd::Result& error) override
-    {
-        std::cout << "Error: " << error.description() << std::endl;
-    }
-};
-
 bool parseTxtRecord (dnssd::TxtRecord& txtRecord, const std::string& stringValue)
 {
     if (stringValue.empty())
@@ -28,7 +19,7 @@ bool parseTxtRecord (dnssd::TxtRecord& txtRecord, const std::string& stringValue
     return true;
 }
 
-int main (int argc, char* argv[])
+int main (int const argc, char* argv[])
 {
     std::vector<std::string> args;
     for (int i = 1; i < argc; i++)
@@ -64,7 +55,11 @@ int main (int argc, char* argv[])
         parseTxtRecord (txtRecord, *it);
     }
 
-    MyAdvertiser advertiser;
+    dnssd::Advertiser advertiser;
+
+    advertiser.onAdvertiserErrorAsync ([] (const dnssd::Result& error) {
+        std::cout << "Error: " << error.description() << std::endl;
+    });
 
     auto result = advertiser.registerService (args[0], "001122334455@SomeName", nullptr, portNumber, txtRecord);
     if (result.hasError())
@@ -97,4 +92,6 @@ int main (int argc, char* argv[])
     }
 
     std::cout << "Exit" << std::endl;
+
+    return 0;
 }

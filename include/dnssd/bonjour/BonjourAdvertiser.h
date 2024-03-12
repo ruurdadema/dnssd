@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../common/IAdvertiser.h"
+#include "../common/AdvertiserBase.h"
 #include "../common/Result.h"
 #include "ScopedDnsServiceRef.h"
 
@@ -13,7 +13,7 @@ namespace dnssd
 /**
  * Apple Bonjour implementation of IAdvertiser. Works on macOS and Windows.
  */
-class BonjourAdvertiser : public IAdvertiser
+class BonjourAdvertiser : public AdvertiserBase
 {
 public:
     explicit BonjourAdvertiser() = default;
@@ -31,6 +31,15 @@ public:
 
 private:
     ScopedDnsServiceRef mServiceRef;
+
+    static void DNSSD_API registerServiceCallBack (
+        DNSServiceRef serviceRef,
+        DNSServiceFlags flags,
+        DNSServiceErrorType errorCode,
+        const char* serviceName,
+        const char* regType,
+        const char* replyDomain,
+        void* context);
 };
 
 } // namespace dnssd

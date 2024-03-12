@@ -1,10 +1,10 @@
 #pragma once
 
+#include <utility>
+
 #include "../common/TxtRecord.h"
 #include "Result.h"
 #include "Util.h"
-
-#include <functional>
 
 namespace dnssd
 {
@@ -12,11 +12,13 @@ namespace dnssd
 /**
  * Interface class which represents a dnssd advertiser object, which is able to present itself onto the network.
  */
-class IAdvertiser
+class AdvertiserBase
 {
 public:
-    explicit IAdvertiser() = default;
-    virtual ~IAdvertiser() = default;
+    using AdvertiserErrorCallback = std::function<void (const Result& error)>;
+
+    explicit AdvertiserBase() = default;
+    virtual ~AdvertiserBase() = default;
 
     /**
      * Registers a service with given arguments.
@@ -53,11 +55,17 @@ public:
     virtual void unregisterService() noexcept = 0;
 
     /**
-     * Called when there was an error.
+     * Set a callback for when an error happens.
      * Note: this call will be made from a background thread and wil not be synchronised.
-     * @param error The error which occured.
+     * @param callback The function to be called when an error happens.
      */
-    virtual void onAdvertiserErrorAsync (const Result& error) { ignore (error); }
+    virtual void onAdvertiserErrorAsync (AdvertiserErrorCallback callback)
+    {
+        onAdvertiserErrorCallback = std::move (callback);
+    }
+
+protected:
+    AdvertiserErrorCallback onAdvertiserErrorCallback;
 };
 
 } // namespace dnssd
