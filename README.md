@@ -1,4 +1,5 @@
 # DNS Service Discovery for C++
+
 This library provides an interface which allows to use dns-sd in an easy way.
 
 ## Prerequisites
@@ -15,12 +16,7 @@ This library provides an interface which allows to use dns-sd in an easy way.
 * Bonjour SDK (Apple)  
 This library uses the Bonjour SDK and expects it to be in the default install location (ie C:\Program Files\Bonjour SDK).
 
-### Linux - Not supported yet
-Do you want to use this library on Linux (using Avahi)? Ping me a message.
-
 ## How to use
-
-[Documentation](https://dnssd.docsforge.com/)
 
 ### Browsing
 
@@ -80,7 +76,7 @@ Do you want to use this library on Linux (using Avahi)? Ping me a message.
 
 ## As subdirectory
 
-The easiest way of using this libary is to include it as subdirectory in your CMake project:
+The easiest way of using this library is to include it as subdirectory in your CMake project:
 
     add_subdirectory(./path/to/this/directory)
     
@@ -97,4 +93,4 @@ If you don't use CMake for building then this way will produce a separate librar
     cmake ..
     cmake --build .
     
-After this you end up with two test command line utilities and a libray
+After this you end up with two test command line utilities and a libray.
