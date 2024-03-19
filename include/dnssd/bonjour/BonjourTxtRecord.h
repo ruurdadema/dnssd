@@ -52,7 +52,7 @@ public:
     static TxtRecord getTxtRecordFromRawBytes (const unsigned char* txtRecord, uint16_t txtRecordLength) noexcept;
 
 private:
-    TXTRecordRef mTxtRecordRef;
+    TXTRecordRef mTxtRecordRef{};
 };
 
 } // namespace dnssd
