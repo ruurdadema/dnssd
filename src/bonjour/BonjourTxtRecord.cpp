@@ -5,7 +5,7 @@ using namespace dnssd;
 
 BonjourTxtRecord::BonjourTxtRecord (const TxtRecord& txtRecord)
 {
-    // This way (0 and nullptr) the dns-sd will arrange allocation for a buffer.
+    // By passing 0 and nullptr, TXTRecordCreate will arrange allocation for a buffer.
     TXTRecordCreate (&mTxtRecordRef, 0, nullptr);
 
     for (auto& kv : txtRecord)
