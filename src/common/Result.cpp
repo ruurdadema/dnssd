@@ -44,6 +44,7 @@ Result::Result (DNS_STATUS error) noexcept
         {
             std::stringstream message;
             message << "Windns error: (Unable to format DNS error code: " << error << ")";
+            mErrorMsg = message.str();
         }
     }
 

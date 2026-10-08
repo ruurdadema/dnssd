@@ -1,7 +1,9 @@
 #pragma once
 
 #if _WIN32 && USE_WINDNS
+#ifndef _WINSOCKAPI_
 #define _WINSOCKAPI_ // Prevents inclusion of winsock.h in windows.h
+#endif
 #include <Ws2tcpip.h>
 #include <winsock2.h>
 #include <windows.h>

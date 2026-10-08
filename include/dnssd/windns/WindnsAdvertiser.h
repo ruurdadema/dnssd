@@ -8,17 +8,27 @@
 #include "dnssd/common/AdvertiserBase.h"
 #include "dnssd/common/Result.h"
 #include "dnssd/common/Log.h"
-#include <mutex>
+
 #include <condition_variable>
+#include <mutex>
+#include <string>
 
 namespace dnssd
 {
 
+/**
+ * Windows native DNS-SD implementation of AdvertiserBase using the WinDNS API (windns.h).
+ * Only the .local mDNS domain is supported.
+ *
+ * Registration and deregistration complete asynchronously on a WinDNS thread-pool thread. The public methods
+ * synchronise with these completions, so they can be called in any order (e.g. updateTxtRecord or unregisterService
+ * directly after registerService).
+ */
 class WindnsAdvertiser : public AdvertiserBase
 {
 public:
     explicit WindnsAdvertiser() = default;
-    ~WindnsAdvertiser();
+    ~WindnsAdvertiser() override;
 
     // MARK: IAdvertiser implementations -
     Result registerService (
@@ -31,37 +41,37 @@ public:
     Result updateTxtRecord (const TxtRecord& txtRecord) override;
     void unregisterService() noexcept override;
 
-    enum class RegisterEventType
-    {
-        Register = 0,
-        Deregister
-    };
-
-    struct RegisterRequestContext
-    {
-        RegisterEventType event_type;
-        WindnsAdvertiser* owner;
-    };
-
 private:
-    DNS_SERVICE_REGISTER_REQUEST mReq { 0 };
-    RegisterRequestContext mCtx {};
-    PDNS_SERVICE_CANCEL mCancelPtr = nullptr;
-    TxtRecord mTxtRecord;
+    enum class State
+    {
+        Idle,          // Nothing registered
+        Registering,   // DnsServiceRegister issued, waiting for the completion callback
+        Registered,    // Registration completed successfully
+        Deregistering, // DnsServiceDeRegister issued, waiting for the completion callback
+    };
 
-    bool mCallbackPending = false;
-    bool mCallbackFinished = false;
-    std::atomic<bool> mRegistered = false;
+    DNS_SERVICE_REGISTER_REQUEST mReq {};
+    DNS_SERVICE_CANCEL mCancel {};
+    std::wstring mInstanceName;
+    uint16_t mPort = 0;
 
-    std::mutex mLock; // For synchronisation with the callback
-    std::condition_variable mCv; // For synchronisation with the callback
+    State mState = State::Idle; // Guarded by mLock
+    std::mutex mLock;           // For synchronisation with the callback
+    std::condition_variable mCv;
 
-	static VOID WINAPI registerCompleteCallback (DWORD Status, PVOID pQueryContext, PDNS_SERVICE_INSTANCE pInstance);
+    static VOID WINAPI registerCompleteCallback (DWORD Status, PVOID pQueryContext, PDNS_SERVICE_INSTANCE pInstance);
 
     /**
-    * Used by registerCompleteCallback to synchronise with the destructor.
-    */
-    void onCallbackFinished();
+     * Issues DnsServiceRegister for mInstanceName and mPort with the given TXT record.
+     * Must be called while in the Idle state.
+     */
+    Result doRegister (const TxtRecord& txtRecord);
+
+    /**
+     * Waits until the state is no longer equal to the given state, or until kWindnsCallbackTimeout has passed.
+     * @return true if the state changed, false on timeout.
+     */
+    bool waitWhileInState (std::unique_lock<std::mutex>& lock, State state);
 };
 
 } // namespace dnssd

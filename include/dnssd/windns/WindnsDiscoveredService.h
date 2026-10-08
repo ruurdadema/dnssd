@@ -7,6 +7,8 @@
 #include "Windns.h"
 #include "dnssd/ServiceDescription.h"
 
+#include <cstdint>
+
 namespace dnssd
 {
 
@@ -18,8 +20,9 @@ struct WindnsDiscoveredService
     /// The service description, filled incrementally as queries complete.
     ServiceDescription description;
 
-    /// TTL from the PTR record; used for goodbye packet detection (zero TTL = removal).
-    DWORD ttl = 0;
+    /// Unique id of this entry. Async contexts carry this id so that a late callback for a removed entry is not
+    /// applied to a newer entry with the same instance name.
+    uint64_t id = 0;
 
     /// Cancel handle for the in-flight DnsServiceResolve call.
     DNS_SERVICE_CANCEL resolveCancel {};
@@ -30,12 +33,11 @@ struct WindnsDiscoveredService
     /// Cancel handle for the in-flight AAAA record (IPv6) query.
     DNS_QUERY_CANCEL aaaaCancel {};
 
-    /// True once DnsServiceResolve has been called (cancel handle is live).
-    bool resolveStarted = false;
+    /// True while a DnsServiceResolve call is in-flight (cancel handle is live).
+    bool resolveInFlight = false;
 
-    /// True once the DnsServiceResolve callback has fired (success or failure).
-    /// Indicates the cancel handle is no longer live; hostTarget is populated only on success.
-    bool resolveFinished = false;
+    /// True once the service has been resolved successfully at least once.
+    bool resolved = false;
 
     /// True while a DnsQueryEx A (IPv4) call is in-flight (cancel handle is live).
     bool aQueryInFlight = false;
